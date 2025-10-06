@@ -1,0 +1,19 @@
+# Build artifacts
+bin/
+obj/
+*.user
+*.rsuser
+*.suo
+*.cache
+*.ide
+.vs/
+
+# MonoGame / MGCB
+*.mgcb
+**/.mgcb-cache/
+**/*.xnb
+
+# Tools & packages
+*.nupkg
+packages/
+.nuget/
