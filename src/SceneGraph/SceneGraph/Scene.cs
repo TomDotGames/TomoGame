@@ -44,7 +44,7 @@ namespace TomoGame.Core.SceneGraph
         {
             Debug.Assert(spriteBatch != null);
 
-            float flDeltaTime = gameTime.ElapsedGameTime.Ticks / (float)TimeSpan.TicksPerSecond;
+            float flDeltaTime = gameTime.ElapsedGameTime.Ticks / (float)TimeSpan.TicksPerSecond; // this is wrong?
             RootNode.Draw(flDeltaTime, spriteBatch);
         }
 
