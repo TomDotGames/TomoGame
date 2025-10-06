@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace TDG.SceneGraph
+namespace TomoGame.Core.SceneGraph
 {
-    public class SceneNode
+    public class Node
     {
         protected Scene OwnerScene => m_scene;
         private Scene m_scene;
@@ -42,11 +42,11 @@ namespace TDG.SceneGraph
         }
         private Vector2 m_vPositionLocal;
 
-        public SceneNode Parent => m_parent;
-        private SceneNode m_parent;
-        protected List<SceneNode> m_children = new List<SceneNode>();
+        public Node Parent => m_parent;
+        private Node m_parent;
+        protected List<Node> m_children = new List<Node>();
 
-        public SceneNode(SceneNode parent, Scene scene)
+        public Node(Node parent, Scene scene)
         {
             parent?.AddChild(this);
             m_scene = scene;
@@ -55,7 +55,7 @@ namespace TDG.SceneGraph
             Debug.Assert(m_scene != null);
         }
 
-        public SceneNode(SceneNode parent)
+        public Node(Node parent)
         {
             parent?.AddChild(this);
             m_scene = parent.m_scene;
@@ -90,7 +90,7 @@ namespace TDG.SceneGraph
             }
         }
 
-        public void AddChild(SceneNode child)
+        public void AddChild(Node child)
         {
             Debug.Assert(child != null);
             if (!m_children.Contains(child))
@@ -100,7 +100,7 @@ namespace TDG.SceneGraph
             }
         }
 
-        public void RemoveChild(SceneNode child)
+        public void RemoveChild(Node child)
         {
             Debug.Assert(child != null);
             if (m_children.Contains(child))
@@ -110,7 +110,7 @@ namespace TDG.SceneGraph
             }
         }
 
-        protected void SetParent(SceneNode parent)
+        protected void SetParent(Node parent)
         {
             if (m_parent != null)
             {
