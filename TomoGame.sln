@@ -3,58 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomoGame.Samples.Minimal.Android", "samples\Minimal\Minimal.Android\TomoGame.Samples.Minimal.Android.csproj", "{A76A4174-25F8-43F0-A207-64C9FFA8093C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomoGame.Samples.Minimal.Core", "samples\Minimal\Minimal.Core\TomoGame.Samples.Minimal.Core.csproj", "{C998F159-4311-491E-B9CA-96F215B92127}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomoGame.Samples.Minimal.DesktopGL", "samples\Minimal\Minimal.DesktopGL\TomoGame.Samples.Minimal.DesktopGL.csproj", "{110E245B-0812-4305-8120-A4748155C9F6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomoGame.Samples.Minimal.iOS", "samples\Minimal\Minimal.iOS\TomoGame.Samples.Minimal.iOS.csproj", "{4FD45EE7-3F23-41EF-A36C-D3FD787BC30F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomoGame.Samples.Minimal.WindowsDX", "samples\Minimal\Minimal.WindowsDX\TomoGame.Samples.Minimal.WindowsDX.csproj", "{6E052EC7-2F1B-4A98-9BC2-93837DBBC8AB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{52794C30-96C8-4489-99F9-BD246573D593}"
-EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A76A4174-25F8-43F0-A207-64C9FFA8093C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A76A4174-25F8-43F0-A207-64C9FFA8093C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A76A4174-25F8-43F0-A207-64C9FFA8093C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{A76A4174-25F8-43F0-A207-64C9FFA8093C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A76A4174-25F8-43F0-A207-64C9FFA8093C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A76A4174-25F8-43F0-A207-64C9FFA8093C}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{C998F159-4311-491E-B9CA-96F215B92127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C998F159-4311-491E-B9CA-96F215B92127}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C998F159-4311-491E-B9CA-96F215B92127}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C998F159-4311-491E-B9CA-96F215B92127}.Release|Any CPU.Build.0 = Release|Any CPU
-		{110E245B-0812-4305-8120-A4748155C9F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{110E245B-0812-4305-8120-A4748155C9F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{110E245B-0812-4305-8120-A4748155C9F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{110E245B-0812-4305-8120-A4748155C9F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FD45EE7-3F23-41EF-A36C-D3FD787BC30F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4FD45EE7-3F23-41EF-A36C-D3FD787BC30F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4FD45EE7-3F23-41EF-A36C-D3FD787BC30F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{4FD45EE7-3F23-41EF-A36C-D3FD787BC30F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4FD45EE7-3F23-41EF-A36C-D3FD787BC30F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FD45EE7-3F23-41EF-A36C-D3FD787BC30F}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{6E052EC7-2F1B-4A98-9BC2-93837DBBC8AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E052EC7-2F1B-4A98-9BC2-93837DBBC8AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E052EC7-2F1B-4A98-9BC2-93837DBBC8AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E052EC7-2F1B-4A98-9BC2-93837DBBC8AB}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{A76A4174-25F8-43F0-A207-64C9FFA8093C} = {52794C30-96C8-4489-99F9-BD246573D593}
-		{C998F159-4311-491E-B9CA-96F215B92127} = {52794C30-96C8-4489-99F9-BD246573D593}
-		{110E245B-0812-4305-8120-A4748155C9F6} = {52794C30-96C8-4489-99F9-BD246573D593}
-		{4FD45EE7-3F23-41EF-A36C-D3FD787BC30F} = {52794C30-96C8-4489-99F9-BD246573D593}
-		{6E052EC7-2F1B-4A98-9BC2-93837DBBC8AB} = {52794C30-96C8-4489-99F9-BD246573D593}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6818838D-A417-49C3-863D-6FDF65CEFD32}
