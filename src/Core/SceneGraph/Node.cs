@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace TomoGame.Core.SceneGraph
 {
-    public class Node
+    public class Node : Composite
     {
         protected Scene OwnerScene => m_scene;
         private Scene m_scene;
@@ -72,21 +72,23 @@ namespace TomoGame.Core.SceneGraph
             }
         }
 
-        public virtual void Draw(float flDeltaTime, SpriteBatch spriteBatch)
+        public override void Update(float flDeltaTime)
+        {
+            base.Update(flDeltaTime);
+
+            foreach (var child in m_children)
+            {
+                child.Update(flDeltaTime);
+            }
+        }
+
+        public override void Render(float flDeltaTime, SpriteBatch spriteBatch)
         {
             Debug.Assert(spriteBatch != null);
 
             foreach (var child in m_children)
             {
-                child.Draw(flDeltaTime, spriteBatch);
-            }
-        }
-
-        public virtual void Update(float flDeltaTime)
-        {
-            foreach (var child in m_children)
-            {
-                child.Update(flDeltaTime);
+                child.Render(flDeltaTime, spriteBatch);
             }
         }
 

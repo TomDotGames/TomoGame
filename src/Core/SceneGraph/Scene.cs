@@ -9,8 +9,8 @@ namespace TomoGame.Core.SceneGraph
     {
         public enum ESceneScaleMode
         {
-            Fixed_Height,
-            Fixed_Width
+            FixedHeight,
+            FixedWidth
         }
 
         public float ScaleFactor => m_flScaleFactor;
@@ -27,7 +27,7 @@ namespace TomoGame.Core.SceneGraph
             Debug.Assert(nSize > 0);
 
             // eventually we will want to be able to change the window size
-            float flWindowSize = eScaleMode == ESceneScaleMode.Fixed_Height ? graphics.PreferredBackBufferHeight : graphics.PreferredBackBufferWidth;
+            float flWindowSize = eScaleMode == ESceneScaleMode.FixedHeight ? graphics.PreferredBackBufferHeight : graphics.PreferredBackBufferWidth;
             Debug.Assert(flWindowSize > 0);
 
             m_flScaleFactor = flWindowSize / nSize;
@@ -40,18 +40,19 @@ namespace TomoGame.Core.SceneGraph
             RootNode.Initialize();
         }
 
-        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+
+        public void Update(GameTime gameTime)
+        {
+            float flDeltaTime = gameTime.ElapsedGameTime.Ticks / (float)TimeSpan.TicksPerSecond;
+            RootNode.Update(flDeltaTime);
+        }
+
+        public void Render(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Debug.Assert(spriteBatch != null);
 
             float flDeltaTime = gameTime.ElapsedGameTime.Ticks / (float)TimeSpan.TicksPerSecond; // this is wrong?
-            RootNode.Draw(flDeltaTime, spriteBatch);
-        }
-
-        public virtual void Update(GameTime gameTime)
-        {
-            float flDeltaTime = gameTime.ElapsedGameTime.Ticks / (float)TimeSpan.TicksPerSecond;
-            RootNode.Update(flDeltaTime);
+            RootNode.Render(flDeltaTime, spriteBatch);
         }
 
         public Vector2 WindowToSceneCoords(Vector2 vWindowCoords)
