@@ -84,7 +84,7 @@ namespace TomoGame.Core.SceneGraph
 
         public override void Render(float flDeltaTime, SpriteBatch spriteBatch)
         {
-            Debug.Assert(spriteBatch != null);
+            base.Render(flDeltaTime, spriteBatch);
 
             foreach (var child in m_children)
             {

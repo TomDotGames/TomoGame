@@ -11,9 +11,9 @@ namespace TomoGame.Core.Resources
         private ContentManager m_contentManager;
         private Dictionary<string, T> m_resources = new Dictionary<string, T>();
 
-        public ResourceLoader(IServiceProvider serviceProvider, string strDirectory)
+        public ResourceLoader(string strDirectory)
         {
-            m_contentManager = new ContentManager(serviceProvider);
+            m_contentManager = new ContentManager(TomoGame.Instance.Services);
             m_contentManager.RootDirectory = "Content";
 
             // Load all resources in the given directory
@@ -23,8 +23,9 @@ namespace TomoGame.Core.Resources
             FileInfo[] files = dir.GetFiles("*.*", SearchOption.AllDirectories);
             foreach (FileInfo file in files)
             {
-                string strName = file.Directory.FullName + "/" + Path.GetFileNameWithoutExtension(file.Name);
-                T loadedAsset = m_contentManager.Load<T>(strName);
+                string strName = Path.GetFileNameWithoutExtension(file.Name);
+                string strPath = strDirectory + "/" + Path.GetFileNameWithoutExtension(file.Name);
+                T loadedAsset = m_contentManager.Load<T>(strPath);
                 Debug.Assert(loadedAsset != null);
                 m_resources.Add(strName, loadedAsset);
             }
