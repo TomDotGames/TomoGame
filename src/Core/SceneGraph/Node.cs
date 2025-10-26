@@ -5,52 +5,22 @@ using System.Diagnostics;
 
 namespace TomoGame.Core.SceneGraph
 {
-    public class Node : Composite
+    public class Node
     {
-        protected Scene OwnerScene => m_scene;
+        public Scene Scene => m_scene;
         private Scene m_scene;
 
-        public Vector2 PositionWorld
-        {
-            get => m_vPositionWorld;
-            set
-            {
-                if (m_vPositionWorld != value)
-                {
-                    m_vPositionWorld = value;
-                    Vector2 vParentPosition = m_parent == null ? Vector2.Zero : m_parent.PositionWorld;
-                    m_vPositionLocal = vParentPosition - m_vPositionWorld;
-                    OnTransformChanged();
-                }
-            }
-        }
-        private Vector2 m_vPositionWorld;
-
-        public Vector2 PositionLocal
-        {
-            get => m_vPositionLocal;
-            set
-            {
-                if (m_vPositionLocal != value)
-                {
-                    m_vPositionLocal = value;
-                    Vector2 vParentPosition = m_parent == null ? Vector2.Zero : m_parent.PositionWorld;
-                    m_vPositionWorld = vParentPosition + m_vPositionLocal;
-                    OnTransformChanged();
-                }
-            }
-        }
-        private Vector2 m_vPositionLocal;
+        public Rect RectWorld;
+        private Rect m_rectWorld;
 
         public Node Parent => m_parent;
         private Node m_parent;
         protected List<Node> m_children = new List<Node>();
 
-        public Node(Node parent, Scene scene)
+        public Node(Scene scene)
         {
-            parent?.AddChild(this);
             m_scene = scene;
-            m_parent = parent;
+            m_rectWorld.Size = scene.Size;
 
             Debug.Assert(m_scene != null);
         }
@@ -72,20 +42,16 @@ namespace TomoGame.Core.SceneGraph
             }
         }
 
-        public override void Update(float flDeltaTime)
+        public virtual void Update(float flDeltaTime)
         {
-            base.Update(flDeltaTime);
-
             foreach (var child in m_children)
             {
                 child.Update(flDeltaTime);
             }
         }
 
-        public override void Render(float flDeltaTime, SpriteBatch spriteBatch)
+        public virtual void Render(float flDeltaTime, SpriteBatch spriteBatch)
         {
-            base.Render(flDeltaTime, spriteBatch);
-
             foreach (var child in m_children)
             {
                 child.Render(flDeltaTime, spriteBatch);
@@ -120,7 +86,6 @@ namespace TomoGame.Core.SceneGraph
                 m_parent.m_children.Remove(this);
             }
 
-            m_vPositionLocal = parent == null ? Vector2.Zero : PositionWorld - parent.PositionWorld;
             m_parent = parent;
         }
 
@@ -128,7 +93,6 @@ namespace TomoGame.Core.SceneGraph
         {
             foreach (var child in m_children)
             {
-                child.m_vPositionWorld = PositionWorld + child.PositionLocal;
                 child.OnTransformChanged();
             }
         }

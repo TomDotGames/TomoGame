@@ -18,9 +18,8 @@ namespace Minimal.Core
             base.Initialize();
 
             ResourceLoader<Texture2D> spriteLoader = new ResourceLoader<Texture2D>("sprites");
-            SpriteRenderer renderer = new SpriteRenderer(spriteLoader.Get("bear"));
-            Node spriteNode = new Node(RootNode);
-            spriteNode.AddComponent(renderer);
+            CompositeNode spriteNode = new CompositeNode(RootNode);
+            SpriteRenderer renderer = new SpriteRenderer(spriteNode, spriteLoader.Get("bear"));
         }
     }
 }

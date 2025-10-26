@@ -1,14 +1,23 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace TomoGame.Core.SceneGraph
 {
-    public class Composite
+    public class CompositeNode : Node
     {
         private List<Component> m_components = new List<Component>();
         private List<IUpdatable> m_updatables = new List<IUpdatable>();
         private List<IRenderable> m_renderables = new List<IRenderable>();
+
+        public CompositeNode(Scene scene) : base(scene)
+        {
+        }
+
+        public CompositeNode(Node parent) : base(parent)
+        {
+        }
 
         public void AddComponent(Component component)
         {
@@ -28,7 +37,7 @@ namespace TomoGame.Core.SceneGraph
             }
         }
 
-        public virtual void Render(float flDeltaTime, SpriteBatch spriteBatch)
+        public override void Render(float flDeltaTime, SpriteBatch spriteBatch)
         {
             Debug.Assert(spriteBatch != null);
 
@@ -38,7 +47,7 @@ namespace TomoGame.Core.SceneGraph
             }
         }
 
-        public virtual void Update(float flDeltaTime)
+        public override void Update(float flDeltaTime)
         {
             foreach (IUpdatable updatable in m_updatables)
             {

@@ -22,6 +22,9 @@ namespace TomoGame.Core.SceneGraph
         public GraphicsDevice Graphics => m_graphics.GraphicsDevice;
         protected GraphicsDeviceManager m_graphics;
 
+        public Vector2 Size => m_size;
+        private Vector2 m_size;
+
         public Scene(GraphicsDeviceManager graphics, ESceneScaleMode eScaleMode, int nSize)
         {
             Debug.Assert(nSize > 0);
@@ -31,7 +34,11 @@ namespace TomoGame.Core.SceneGraph
             Debug.Assert(flWindowSize > 0);
 
             m_flScaleFactor = flWindowSize / nSize;
-            m_rootNode = new Node(null, this);
+            float flWidth = m_flScaleFactor * graphics.PreferredBackBufferWidth;
+            float flHeight = m_flScaleFactor * graphics.PreferredBackBufferHeight;
+            m_size = new Vector2(flWidth, flHeight);
+            
+            m_rootNode = new Node(this);
             m_graphics = graphics;
         }
 
@@ -39,7 +46,6 @@ namespace TomoGame.Core.SceneGraph
         {
             RootNode.Initialize();
         }
-
 
         public void Update(GameTime gameTime)
         {
@@ -58,6 +64,12 @@ namespace TomoGame.Core.SceneGraph
         public Vector2 WindowToSceneCoords(Vector2 vWindowCoords)
         {
             return vWindowCoords / m_flScaleFactor;
+        }
+
+        public Rect SceneToWindowRect(Rect rectScene)
+        {
+            Rect rectWindow = new Rect(rectScene.Origin * m_flScaleFactor, rectScene.Size * m_flScaleFactor, rectScene.Origin);
+            return rectWindow;
         }
     }
 }

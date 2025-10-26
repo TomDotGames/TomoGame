@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 
 namespace TomoGame.Core.SceneGraph
@@ -13,7 +14,15 @@ namespace TomoGame.Core.SceneGraph
         void Render(float flDeltaTime, SpriteBatch spriteBatch);
     }
 
-    public class Component
+    public abstract class Component
     {
+        public CompositeNode Node => m_node;
+        private readonly CompositeNode m_node;
+
+        public Component(CompositeNode node)
+        {
+            m_node = node;
+            m_node.AddComponent(this);
+        }
     }
 }
