@@ -47,7 +47,7 @@ namespace TomoGame.Core.SceneGraph
             RootNode.Initialize();
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             float flDeltaTime = gameTime.ElapsedGameTime.Ticks / (float)TimeSpan.TicksPerSecond;
             RootNode.Update(flDeltaTime);
@@ -68,7 +68,7 @@ namespace TomoGame.Core.SceneGraph
 
         public Rect SceneToWindowRect(Rect rectScene)
         {
-            Rect rectWindow = new Rect(rectScene.Origin * m_flScaleFactor, rectScene.Size * m_flScaleFactor, rectScene.Origin);
+            Rect rectWindow = new Rect(rectScene.Position * m_flScaleFactor, rectScene.Size * m_flScaleFactor, rectScene.OriginUV);
             return rectWindow;
         }
     }

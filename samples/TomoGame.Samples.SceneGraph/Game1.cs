@@ -1,19 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Minimal.Core.Localization;
+using Minimal.Core;
 using TomoGame.Core.SceneGraph;
 
-namespace Minimal.Core
+namespace TomoGame.Samples.SceneGraph
 {
-    public class MinimalGame : TomoGame.Core.TomoGame
+    public class Game1 : TomoGame.Core.TomoGame
     {
         private MainScene m_scene;
- 
-        public MinimalGame()
+
+        public Game1()
         {
 
         }
@@ -21,7 +18,7 @@ namespace Minimal.Core
         protected override void LoadContent()
         {
             base.LoadContent();
-            m_scene = new MainScene(Graphics, Scene.ESceneScaleMode.FixedWidth, 80);
+            m_scene = new MainScene(Graphics, Scene.ESceneScaleMode.FixedHeight, 200);
         }
 
         protected override void BeginRun()
