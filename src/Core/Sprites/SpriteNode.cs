@@ -3,23 +3,21 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using TomoGame.Core.SceneGraph;
 
-namespace TomoGame.Core.Sprites
-{
-    public class SpriteNode : Node
-    {
-        private readonly Texture2D _texture;
-        
-        public SpriteNode(Node parent, Texture2D texture) : base(parent)
-        {
-            Debug.Assert(texture != null);
-            _texture = texture;
-            SetLocalSize(texture.Width, texture.Height);
-        }
+namespace TomoGame.Core.Sprites;
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(_texture, LocalRect.ToRectangle(), Color.White);
-            base.Draw(spriteBatch);
-        }
+public class SpriteNode : Node
+{
+    private readonly SpriteRenderer _renderer;
+        
+    public SpriteNode(Node parent, string spriteSheetPath) : base(parent)
+    {
+        _renderer = new(spriteSheetPath);
+        SetLocalSize(_renderer.Size.X, _renderer.Size.Y);
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        _renderer.Draw(spriteBatch, LocalRect);
+        base.Draw(spriteBatch);
     }
 }

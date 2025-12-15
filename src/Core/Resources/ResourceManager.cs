@@ -24,8 +24,9 @@ namespace TomoGame.Core.Resources
             FileInfo[] files = dir.GetFiles( "*.*", SearchOption.AllDirectories );
             foreach ( FileInfo file in files )
             {
-                string sName = file.Directory.FullName + "/" + Path.GetFileNameWithoutExtension( file.Name );
-                T loadedAsset = _contentManager.Load<T>( sName );
+                string sPath = Path.GetRelativePath( _contentManager.RootDirectory, file.FullName );
+                sPath = Path.ChangeExtension( sPath, null );
+                T loadedAsset = _contentManager.Load<T>( sPath );
                 Debug.Assert( loadedAsset != null );
             }
 

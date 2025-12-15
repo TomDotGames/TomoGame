@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using TomoGame.Core.Resources;
 using TomoGame.Core.SceneGraph;
 
 
@@ -11,17 +13,24 @@ namespace TomoGame.Core
         public static TomoGame Instance => s_instance;
         
         private SceneRootNode _rootNode;
+        
+        public ResourceManager ResourceManager { get; }
 
-        public TomoGame(int width, int height) : base()
+        public GraphicsDeviceManager GraphicsDeviceManager => _graphicsDeviceManager;
+        private GraphicsDeviceManager _graphicsDeviceManager;
+
+        protected TomoGame(int width, int height) : base()
         {
             s_instance = this;
-            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
+            
+            _graphicsDeviceManager = new GraphicsDeviceManager(this);
+            _graphicsDeviceManager.PreferredBackBufferWidth = width;
+            _graphicsDeviceManager.PreferredBackBufferHeight = height;
+            _graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
 
-            Services.AddService(typeof(GraphicsDeviceManager), graphicsDeviceManager);
+            Services.AddService(typeof(GraphicsDeviceManager), _graphicsDeviceManager);
             Content.RootDirectory = "Content";
-            graphicsDeviceManager.PreferredBackBufferWidth = width;
-            graphicsDeviceManager.PreferredBackBufferHeight = height;
-            graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            ResourceManager = new ResourceManager(Services);
         }
 
         protected override void Update(GameTime gameTime)
@@ -33,9 +42,19 @@ namespace TomoGame.Core
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.MonoGameOrange);
+            Matrix baseTransform = Matrix.Identity;
+            baseTransform *= Matrix.CreateScale(10f);
+            
+            GraphicsDevice.Clear(Color.ForestGreen);
             SpriteBatch spriteBatch = new SpriteBatch(GraphicsDevice);
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Begin(
+                SpriteSortMode.FrontToBack,
+                BlendState.AlphaBlend,
+                SamplerState.PointClamp,
+                DepthStencilState.Default,
+                RasterizerState.CullNone,
+                null,
+                baseTransform);
             _rootNode?.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
