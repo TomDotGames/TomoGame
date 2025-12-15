@@ -13,7 +13,7 @@ namespace TomoGame.Core.SceneGraph
         protected Rect LocalRect => _localRect;
         private readonly Rect _localRect = new();
         
-        private readonly Rect _worldRect = new();
+        protected float LocalScale = 1;
 
         protected Node()
         {
