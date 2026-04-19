@@ -17,3 +17,6 @@ obj/
 *.nupkg
 packages/
 .nuget/
+.idea/
+.claude
+CLAUDE.md
