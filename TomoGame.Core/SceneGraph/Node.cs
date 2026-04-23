@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace TomoGame.Core.SceneGraph;
 
@@ -30,12 +31,12 @@ public class Node
         }
     }
 
-    internal void Update(double deltaTime)
+    internal void Update(GameTime gameTime)
     {
-        OnUpdate(deltaTime);
+        OnUpdate(gameTime);
         foreach (Node child in _children)
         {
-            child.Update(deltaTime);
+            child.Update(gameTime);
         }
     }
 
@@ -52,7 +53,7 @@ public class Node
     protected virtual void OnInitialize() { }
 
     /// <summary>Called every game tick. Override to implement update logic.</summary>
-    protected virtual void OnUpdate(double deltaTime) { }
+    protected virtual void OnUpdate(GameTime gameTime) { }
 
     /// <summary>Called every frame during the draw pass. Override to implement drawing.</summary>
     protected virtual void OnDraw(SpriteBatch spriteBatch) { }

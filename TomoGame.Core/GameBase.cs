@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using TomoGame.Core.SceneGraph;
+using TomoGame.Core.Resources;
 
 namespace TomoGame.Core;
 
@@ -10,6 +11,7 @@ public class GameBase : Game
     public static GameBase? Instance { get; private set; }
 
     private GraphicsDeviceManager _graphicsDeviceManager;
+    private ResourceManager _resourceManager;
 
     /// <summary>The graphics device manager.</summary>
     protected GraphicsDeviceManager Graphics => _graphicsDeviceManager;
@@ -33,6 +35,10 @@ public class GameBase : Game
 
     protected override void Initialize()
     {
+        Log.InitOutputFile("game.log");
+
+        _resourceManager = new ResourceManager(Services);
+        
         _graphicsDeviceManager.PreferredBackBufferWidth = _windowWidth;
         _graphicsDeviceManager.PreferredBackBufferHeight = _windowHeight;
         _graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
@@ -45,8 +51,7 @@ public class GameBase : Game
 
     protected override void Update(GameTime gameTime)
     {
-        double deltaTime = gameTime.ElapsedGameTime.TotalSeconds;
-        _rootNode?.Update(deltaTime);
+        _rootNode?.Update(gameTime);
         base.Update(gameTime);
     }
 

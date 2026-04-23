@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace TomoGame.Core;
 
@@ -6,12 +7,16 @@ namespace TomoGame.Core;
 public static class Dbg
 {
     /// <summary>
-    /// Asserts a condition in debug builds only. Wraps the system debug, and is duplicated here for consistency.
+    /// Asserts a condition in debug builds only. Logs an error and triggers a debug assertion if the condition is false.
     /// </summary>
     [Conditional("DEBUG")]
-    public static void Assert(bool condition, string? message = null)
+    public static void Assert(bool condition,
+        [CallerFilePath] string file = "",
+        [CallerLineNumber] int line = 0)
     {
-        Debug.Assert(condition, message);
+        if (!condition)
+            Log.Error("Assertion failed", file, line);
+        Debug.Assert(condition);
     }
 
     /// <summary>

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using TomoGame.Core;
+using TomoGame.Core.Resources;
 using TomoGame.Core.SceneGraph;
 using Color = Microsoft.Xna.Framework.Color;
 
@@ -11,18 +13,17 @@ public class SamplesGame : GameBase
     {
     }
 
+    protected override void LoadContent()
+    {
+        base.LoadContent();
+        ResourceManager.Instance.LoadResourcesInDirectory<Texture2D>("Sprites");
+    }
+
     protected override void Initialize()
     {
         base.Initialize();
-        
-        SceneRootNode scene = new SceneRootNode(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40);
-        SetScene(scene);
-        
-        TransformNode anotherNode = new TransformNode(new Vector2(10, 20), new Vector2(4, 8), scene);
-    }
 
-    protected override void Update(GameTime gameTime)
-    {
-        DebugDraw.NodeRect(SceneRoot, Color.BlueViolet);
+        SceneRootNode scene = new SpriteScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40);
+        SetScene(scene);
     }
 }
