@@ -17,7 +17,7 @@ public class Sprite
         public int FrameCount;
     }
 
-    private Animation[] _animations;
+    private Dictionary<string, Animation> _animations = new();
 
     public Sprite(Texture2D spriteSheet)
     {
@@ -25,10 +25,15 @@ public class Sprite
         _sourceRect = new Rectangle(0, 0, _spriteSheet.Width, _spriteSheet.Height);
     }
 
-    public Sprite(Texture2D spriteSheet, Rectangle sourceRect, Animation[] animations)
+    public Sprite(Texture2D spriteSheet, Rectangle sourceRect, Dictionary<string, Animation> animations)
     {
         _spriteSheet = spriteSheet;
         _sourceRect = sourceRect;
         _animations = animations;
+    }
+    
+    public Animation? GetAnimation(string name)
+    {
+        return _animations.TryGetValue(name, out Animation animation) ? animation : null;
     }
 }

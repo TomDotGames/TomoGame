@@ -45,7 +45,7 @@ public class SpriteRegistry
     private void LoadSpriteFromData(string sheetName, string spriteName, Texture2D sheetTexture, SpriteData spriteData)
     {
         Rectangle sourceRect = new Rectangle(spriteData.Rect[0], spriteData.Rect[1], spriteData.Rect[2], spriteData.Rect[3]);
-        List<Sprite.Animation> animations = [];
+        Dictionary<string, Sprite.Animation> animations = [];
         if (spriteData.Animations != null)
         {
             foreach (KeyValuePair<string, SpriteData.AnimationData> animData in spriteData.Animations)
@@ -53,11 +53,12 @@ public class SpriteRegistry
                 Sprite.Animation animation = new Sprite.Animation();
                 animation.FirstFrameRect = sourceRect; // todo: offsets
                 animation.FrameCount = animData.Value.Frames;
-                animations.Add(animation);
+                Dbg.Assert(!animations.ContainsKey(animData.Key));
+                animations.Add(animData.Key, animation);
             }
         }
 
-        Sprite sprite = new Sprite(sheetTexture, sourceRect, animations.ToArray());
+        Sprite sprite = new Sprite(sheetTexture, sourceRect, animations);
         string name = $"{sheetName}.{spriteName}";
         _sprites.Add(name.ToLower(), sprite);
     }

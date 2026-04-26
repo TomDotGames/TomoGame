@@ -15,8 +15,11 @@ public class SpriteScene : SceneRootNode
         SpriteNode house = new SpriteNode("Sprites/Samples.House", new Vector2(15, 20), this);
         SpriteNode car = new SpriteNode("Sprites/Samples.Car", new Vector2(25, 35), this);
         SpriteNode flower = new SpriteNode("Sprites/Samples.Flower", new Vector2(5, 10), this);
+        flower.PlayAnimation("wave");
         SpriteNode flower2 = new SpriteNode("Sprites/Samples.Flower", new Vector2(28, 7), this);
+        flower2.PlayAnimation("wave");
         _dog = new SpriteNode("Sprites/Samples.Dog", new Vector2(10, 50), this);
+        _dog.PlayAnimation("wag");
     }
     
     protected override void OnUpdate(GameTime gameTime)
@@ -26,6 +29,7 @@ public class SpriteScene : SceneRootNode
         float moveAmount = (float)gameTime.ElapsedGameTime.TotalSeconds * moveSpeed;
         if (_dogGoingRight)
         {
+            _dog.FlipX = false;
             _dog.Translate(new Vector2(moveAmount, 0));
             if (_dog.WorldPosition.X > 30)
             {
@@ -34,6 +38,7 @@ public class SpriteScene : SceneRootNode
         }
         else
         {
+            _dog.FlipX = true;
             _dog.Translate(new Vector2(-moveAmount, 0));
             if (_dog.WorldPosition.X < 5)
             {
