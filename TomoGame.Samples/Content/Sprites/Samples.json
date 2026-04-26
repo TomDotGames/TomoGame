@@ -1,0 +1,27 @@
+{
+  "house": {
+    "rect": [0, 7, 12, 10]
+  },
+  
+  "car": {
+    "rect": [15, 5, 9, 5]
+  },
+  
+  "flower": {
+    "rect": [0, 0, 5, 6],
+    "animations": {
+      "wave": {
+        "frames": 3
+      }
+    }
+  },
+  
+  "dog": {
+    "rect": [12, 12, 6, 5],
+    "animations": {
+      "wag": {
+        "frames": 2
+      }
+    }
+  }
+}

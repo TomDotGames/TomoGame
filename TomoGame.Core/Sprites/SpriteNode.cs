@@ -8,6 +8,10 @@ namespace TomoGame.Core.Sprites;
 public class SpriteNode : TransformNode
 {
     private readonly Sprite _sprite;
+    
+    // animation state
+    private int _animFrame;
+    private double _animFrameStartTime;
 
     public SpriteNode(string spriteName, Vector2 localPosition, Node? parent = null) : base(localPosition, Vector2.Zero, parent)
     {
@@ -20,5 +24,10 @@ public class SpriteNode : TransformNode
         base.OnDraw(spriteBatch);
         
         spriteBatch.Draw(_sprite.Texture, WorldRect.ToRectangle(), _sprite.SourceRect, Color.White);
+    }
+
+    public void PlayAnimation(string animationName)
+    {
+        
     }
 }

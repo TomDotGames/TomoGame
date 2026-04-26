@@ -30,7 +30,7 @@ public class ResourceManager
         );
         Dbg.Assert(dir.Exists);
 
-        FileInfo[] files = dir.GetFiles("*.*", SearchOption.AllDirectories);
+        FileInfo[] files = dir.GetFiles("*.xnb", SearchOption.AllDirectories);
         string rootPath = Path.GetFullPath(_contentManager.RootDirectory);
         foreach (FileInfo file in files)
         {

@@ -34,6 +34,12 @@ public class TransformNode : Node
         ComputeWorldRect();
     }
 
+    public void Translate(Vector2 offset)
+    {
+        _localRect.Min += offset;
+        ComputeWorldRect();
+    }
+
     private void ComputeWorldRect()
     {
         Vector2 parentWorldPosition = (Parent as TransformNode)?.WorldPosition ?? Vector2.Zero;
