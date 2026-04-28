@@ -35,12 +35,8 @@ public class SpriteNode : TransformNode
     protected override void OnDraw(SpriteBatch spriteBatch)
     {
         base.OnDraw(spriteBatch);
-        float width = FlipX ? -_sourceRect.Width : _sourceRect.Width;
-        float x = FlipX ? _sourceRect.X - width : _sourceRect.X;
-        Rectangle sourceRect = _sourceRect;
-        sourceRect.Width = (int)width;
-        sourceRect.X = (int)x;
-        spriteBatch.Draw(_sprite.Texture, WorldRect.ToRectangle(), sourceRect, Color.White);
+        SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+        spriteBatch.Draw(_sprite.Texture, WorldPosition, _sourceRect, Color.White, 0f, Vector2.Zero, Vector2.One, effects, 0f);
     }
 
     protected override void OnUpdate(GameTime gameTime)
@@ -77,7 +73,7 @@ public class SpriteNode : TransformNode
                 animFrame = _animCurrent.Value.FrameCount - animFrame - 1;
             }
             _sourceRect = _sprite.SourceRect;
-            _sourceRect.X = _animCurrent.Value.FirstFrameRect.X + animFrame * _sourceRect.Width;
+            _sourceRect.X = _animCurrent.Value.FirstFrameRect.X + animFrame * (_sourceRect.Width + 1);
         }
     }
 

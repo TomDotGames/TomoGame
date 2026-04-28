@@ -16,7 +16,9 @@ public class SpriteScene : SceneRootNode
         SpriteNode car = new SpriteNode("Sprites/Samples.Car", new Vector2(25, 35), this);
         SpriteNode flower = new SpriteNode("Sprites/Samples.Flower", new Vector2(5, 10), this);
         flower.PlayAnimation("wave");
+        flower.AnimMode = SpriteNode.AnimationMode.PingPong;
         SpriteNode flower2 = new SpriteNode("Sprites/Samples.Flower", new Vector2(28, 7), this);
+        flower2.AnimMode = SpriteNode.AnimationMode.PingPong;
         flower2.PlayAnimation("wave");
         _dog = new SpriteNode("Sprites/Samples.Dog", new Vector2(10, 50), this);
         _dog.PlayAnimation("wag");

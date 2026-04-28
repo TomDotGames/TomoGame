@@ -9,7 +9,7 @@ namespace TomoGame.Samples;
 
 public class SamplesGame : GameBase
 {
-    public SamplesGame() : base(800, 1200)
+    public SamplesGame() : base(400, 600)
     {
     }
 
