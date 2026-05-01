@@ -5,9 +5,13 @@ namespace TomoGame.Core;
 /// <summary>A line segment defined by a start and end point.</summary>
 public struct Line
 {
+    /// <summary>The start point of the line segment.</summary>
     public Vector2 Start { get; set; }
+
+    /// <summary>The end point of the line segment.</summary>
     public Vector2 End { get; set; }
 
+    /// <summary>Creates a line segment from <paramref name="start"/> to <paramref name="end"/>.</summary>
     public Line(Vector2 start, Vector2 end)
     {
         Start = start;

@@ -13,6 +13,7 @@ public static class Log
         _logFile = new StreamWriter(path, append: true) { AutoFlush = true };
     }
 
+    /// <summary>Logs an informational message.</summary>
     public static void Info(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         string formatted = $"[{Path.GetFileName(file)}:{line}] {message}";
@@ -20,6 +21,7 @@ public static class Log
         _logFile?.WriteLine(formatted);
     }
 
+    /// <summary>Logs a warning message. Outputs in yellow.</summary>
     public static void Warning(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         string formatted = $"[{Path.GetFileName(file)}:{line}] {message}";
@@ -29,6 +31,7 @@ public static class Log
         _logFile?.WriteLine($"[WARN] {formatted}");
     }
 
+    /// <summary>Logs an error message. Outputs in red.</summary>
     public static void Error(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         string formatted = $"[{Path.GetFileName(file)}:{line}] {message}";

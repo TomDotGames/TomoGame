@@ -5,26 +5,17 @@ using TomoGame.Core.SceneGraph;
 
 namespace TomoGame.Core.Sprites;
 
+/// <summary>A scene node that renders a sprite, with support for animation and horizontal flipping.</summary>
 public class SpriteNode : TransformNode
 {
     private readonly Sprite _sprite;
     private Rectangle _sourceRect;
-    
+    private AnimationPlayer _animationPlayer = new();
+
+    /// <summary>When true, the sprite is rendered flipped horizontally.</summary>
     public bool FlipX { get; set; }
 
-    public enum AnimationMode
-    {
-        Loop,
-        PingPong,
-    };
-    public AnimationMode AnimMode { get; set; }
-    
-    // animation state
-    private Sprite.Animation? _animCurrent;
-    private float _animCycleStartTime;
-    private bool _animPlaybackReversed = false;
-    private bool _animStartNew = false;
-
+    /// <summary>Creates a sprite node using the named sprite from the <see cref="ResourceManager"/>.</summary>
     public SpriteNode(string spriteName, Vector2 localPosition, Node? parent = null) : base(localPosition, Vector2.Zero, parent)
     {
         _sprite = ResourceManager.Instance!.GetSprite(spriteName);
@@ -36,50 +27,33 @@ public class SpriteNode : TransformNode
     {
         base.OnDraw(spriteBatch);
         SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        spriteBatch.Draw(_sprite.Texture, WorldPosition, _sourceRect, Color.White, 0f, Vector2.Zero, Vector2.One, effects, 0f);
+        spriteBatch.Draw(_sprite.Texture, WorldPosition, _sourceRect, Color.White, 0f, Vector2.Zero, Vector2.One,
+            effects, 0f);
     }
 
     protected override void OnUpdate(GameTime gameTime)
     {
         base.OnUpdate(gameTime);
+        _animationPlayer.Update();
 
-        if (_animCurrent != null)
+        if (_animationPlayer.Animation != null)
         {
-            float frameTime = 0.3f; // temp
-            float cycleTimeTotal = _animCurrent.Value.FrameCount * frameTime;
-            float timeNow = (float)gameTime.TotalGameTime.TotalSeconds;
-            if (_animStartNew)
-            {
-                _animCycleStartTime = timeNow;
-                _animStartNew = false;
-            }
-
-            float cycleTimeElapsed = timeNow - _animCycleStartTime;
-            if (cycleTimeElapsed > cycleTimeTotal)
-            {
-                float timeSinceCycleEnd = cycleTimeElapsed - cycleTimeTotal;
-                _animCycleStartTime = timeNow - timeSinceCycleEnd;
-                cycleTimeElapsed = timeSinceCycleEnd;
-
-                if (AnimMode == AnimationMode.PingPong)
-                {
-                    _animPlaybackReversed = !_animPlaybackReversed;
-                }
-            }
-
-            int animFrame = (int)(cycleTimeElapsed / frameTime);
-            if (_animPlaybackReversed)
-            {
-                animFrame = _animCurrent.Value.FrameCount - animFrame - 1;
-            }
-            _sourceRect = _sprite.SourceRect;
-            _sourceRect.X = _animCurrent.Value.FirstFrameRect.X + animFrame * (_sourceRect.Width + 1);
+            int animOffset = _animationPlayer.CurrentFrame * (_sourceRect.Width + 1);
+            _sourceRect.X = _sprite.SourceRect.X + animOffset;
+        }
+        else
+        {
+            _sourceRect.X = _sprite.SourceRect.X;
         }
     }
 
-    public void PlayAnimation(string animationName)
+    /// <summary>Starts playing the named animation. Asserts if the animation does not exist on this sprite.</summary>
+    public void PlayAnimation(string animationName, AnimationPlayer.AnimationMode mode)
     {
-        _animCurrent = _sprite.GetAnimation(animationName);
-        _animStartNew = true;
+        Sprite.Animation? animation = _sprite.GetAnimation(animationName);
+        if (Dbg.Verify(animation != null))
+        {
+            _animationPlayer.PlayAnimation(animation!.Value, mode);
+        }
     }
 }

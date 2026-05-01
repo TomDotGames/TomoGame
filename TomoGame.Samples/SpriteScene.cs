@@ -15,13 +15,11 @@ public class SpriteScene : SceneRootNode
         SpriteNode house = new SpriteNode("Sprites/Samples.House", new Vector2(15, 20), this);
         SpriteNode car = new SpriteNode("Sprites/Samples.Car", new Vector2(25, 35), this);
         SpriteNode flower = new SpriteNode("Sprites/Samples.Flower", new Vector2(5, 10), this);
-        flower.PlayAnimation("wave");
-        flower.AnimMode = SpriteNode.AnimationMode.PingPong;
+        flower.PlayAnimation("wave", AnimationPlayer.AnimationMode.PingPong);
         SpriteNode flower2 = new SpriteNode("Sprites/Samples.Flower", new Vector2(28, 7), this);
-        flower2.AnimMode = SpriteNode.AnimationMode.PingPong;
-        flower2.PlayAnimation("wave");
+        flower2.PlayAnimation("wave", AnimationPlayer.AnimationMode.PingPong);
         _dog = new SpriteNode("Sprites/Samples.Dog", new Vector2(10, 50), this);
-        _dog.PlayAnimation("wag");
+        _dog.PlayAnimation("wag", AnimationPlayer.AnimationMode.Loop);
     }
     
     protected override void OnUpdate(GameTime gameTime)

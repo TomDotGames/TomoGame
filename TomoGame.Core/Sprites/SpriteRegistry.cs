@@ -4,11 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TomoGame.Core.Sprites;
 
+/// <summary>Stores and provides access to loaded sprites, populated from sprite sheet textures and optional JSON atlas descriptors.</summary>
 public class SpriteRegistry
 {
     private class SpriteData
     {
-        public int[] Rect { get; set; }
+        public int[]? Rect { get; set; }
 
         public class AnimationData
         {
@@ -19,6 +20,7 @@ public class SpriteRegistry
     
     private Dictionary<string, Sprite> _sprites = new();
     
+    /// <summary>Loads a sprite sheet texture and its optional JSON atlas descriptor. Sprites are registered as <c>sheetName.spriteName</c>.</summary>
     public void LoadSpriteSheet(string name, Texture2D sheetTexture)
     {
         // base sprite for the whole sheet
@@ -26,25 +28,30 @@ public class SpriteRegistry
         _sprites.Add(name.ToLower(), baseSprite);
         
         // if there is a json descriptor then load and handle that
-        Stream stream = TitleContainer.OpenStream($"Content/{name}.json");
-        StreamReader reader = new StreamReader(stream);
-        string strJson = reader.ReadToEnd();
-        reader.Close();
+        string jsonPath = $"Content/{name}.json";
+        if (File.Exists(jsonPath))
+        {
+            Stream stream = TitleContainer.OpenStream(jsonPath);
+            StreamReader reader = new StreamReader(stream);
+            string strJson = reader.ReadToEnd();
+            reader.Close();
 
-        JsonSerializerOptions options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
-        Dictionary<string, SpriteData> sprites = JsonSerializer.Deserialize<Dictionary<string, SpriteData>>(strJson, options);
-        foreach (KeyValuePair<string, SpriteData> sprite in sprites)
-        {
-            LoadSpriteFromData(name, sprite.Key, sheetTexture, sprite.Value);
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            Dictionary<string, SpriteData>? sprites = JsonSerializer.Deserialize<Dictionary<string, SpriteData>>(strJson, options);
+            foreach (KeyValuePair<string, SpriteData> sprite in sprites ?? [])
+            {
+                LoadSpriteFromData(name, sprite.Key, sheetTexture, sprite.Value);
+            }
         }
     }
 
     private void LoadSpriteFromData(string sheetName, string spriteName, Texture2D sheetTexture, SpriteData spriteData)
     {
-        Rectangle sourceRect = new Rectangle(spriteData.Rect[0], spriteData.Rect[1], spriteData.Rect[2], spriteData.Rect[3]);
+        if (!Dbg.Verify(spriteData.Rect != null)) return;
+        Rectangle sourceRect = new Rectangle(spriteData.Rect![0], spriteData.Rect[1], spriteData.Rect[2], spriteData.Rect[3]);
         Dictionary<string, Sprite.Animation> animations = [];
         if (spriteData.Animations != null)
         {
@@ -63,6 +70,7 @@ public class SpriteRegistry
         _sprites.Add(name.ToLower(), sprite);
     }
 
+    /// <summary>Returns a sprite by name. Name is case-insensitive. Asserts if not found.</summary>
     public Sprite GetSprite(string name)
     {
         name = name.ToLower();

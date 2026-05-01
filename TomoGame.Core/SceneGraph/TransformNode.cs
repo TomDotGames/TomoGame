@@ -34,6 +34,7 @@ public class TransformNode : Node
         ComputeWorldRect();
     }
 
+    /// <summary>Moves this node by the given offset in local space.</summary>
     public void Translate(Vector2 offset)
     {
         _localRect.Min += offset;
