@@ -23,7 +23,7 @@ public class SamplesGame : GameBase
     {
         base.Initialize();
 
-        SceneRootNode scene = new SpriteScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40);
+        SceneRootNode scene = new UIScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40);
         SetScene(scene);
     }
 }

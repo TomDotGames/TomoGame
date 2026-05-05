@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TomoGame.Core.SceneGraph;
 
 namespace TomoGame.Core.Sprites;
 

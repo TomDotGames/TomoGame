@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TomoGame.Core.Resources;
@@ -6,9 +7,10 @@ using TomoGame.Core.SceneGraph;
 namespace TomoGame.Core.Sprites;
 
 /// <summary>A scene node that renders a sprite, with support for animation and horizontal flipping.</summary>
+[LayoutNode("Sprite")]
 public class SpriteNode : TransformNode
 {
-    private readonly Sprite _sprite;
+    private Sprite _sprite;
     private Rectangle _sourceRect;
     private AnimationPlayer _animationPlayer = new();
 
@@ -17,6 +19,20 @@ public class SpriteNode : TransformNode
 
     /// <summary>Creates a sprite node using the named sprite from the <see cref="ResourceManager"/>.</summary>
     public SpriteNode(string spriteName, Vector2 localPosition, Node? parent = null) : base(localPosition, Vector2.Zero, parent)
+    {
+        LoadSprite(spriteName);
+    }
+
+    internal SpriteNode(XElement element, Node? parent) : base(element, parent)
+    {
+        XAttribute? src = element.Attribute("src");
+        if (src != null)
+        {
+            LoadSprite(src.Value);
+        }
+    }
+
+    private void LoadSprite(string spriteName)
     {
         _sprite = ResourceManager.Instance!.GetSprite(spriteName);
         _sourceRect = _sprite.SourceRect;

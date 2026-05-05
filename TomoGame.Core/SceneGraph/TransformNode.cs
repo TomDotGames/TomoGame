@@ -1,8 +1,10 @@
+using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 
 namespace TomoGame.Core.SceneGraph;
 
 /// <summary>A node with a position and size, maintaining both local and world-space rectangles.</summary>
+[LayoutNode("Transform")]
 public class TransformNode : Node
 {
     private Rect _localRect;
@@ -27,10 +29,19 @@ public class TransformNode : Node
         ComputeWorldRect();
     }
 
-    /// <summary>Sets the size of this node.</summary>
+    internal TransformNode(XElement element, Node? parent = null) : this(Vector2.Zero, Vector2.Zero, parent)
+    {
+    }
+
     public void SetSize(float width, float height)
     {
-        _localRect.Size = new Vector2(width, height);
+        SetSize(new Vector2(width, height));
+    }
+    
+    /// <summary>Sets the size of this node.</summary>
+    public void SetSize(Vector2 size)
+    {
+        _localRect.Size = size;
         ComputeWorldRect();
     }
 

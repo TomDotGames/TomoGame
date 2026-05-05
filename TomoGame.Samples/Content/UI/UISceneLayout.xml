@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Layout>
+    <Sprite src="Sprites/Samples.House" pos="bc bc (0, 10)" />
+    <Sprite src="Sprites/Samples.Dog"   pos="br br (-10, 10)" />
+</Layout>
