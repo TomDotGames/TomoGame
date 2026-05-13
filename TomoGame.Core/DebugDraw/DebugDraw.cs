@@ -39,8 +39,8 @@ public static class DebugDraw
         _drawNode!.AddLine(rect.BottomLeft, rect.TopLeft, color, thickness);
     }
 
-    /// <summary>Draws the world rect of a <see cref="TransformNode"/>, and optionally all of its children recursively.</summary>
-    public static void NodeRect(TransformNode node, Color color, float thickness = 1f, bool recursive = true)
+    /// <summary>Draws the world rect of a <see cref="Node"/>, and optionally all of its children recursively.</summary>
+    public static void NodeRect(Node node, Color color, float thickness = 1f, bool recursive = true)
     {
         EnsureDrawNode();
 
@@ -50,11 +50,7 @@ public static class DebugDraw
 
         foreach (Node child in node.Children)
         {
-            TransformNode? childTransformNode = child as TransformNode;
-            if (childTransformNode == null)
-                continue;
-
-            NodeRect(childTransformNode, color, thickness, recursive);
+            NodeRect(child, color, thickness, recursive);
         }
     }
 }

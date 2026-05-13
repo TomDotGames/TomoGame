@@ -12,13 +12,13 @@ public class LayoutNodeAttribute : Attribute
 
 public static class LayoutNodeRegistry
 {
-    private static Dictionary<string, Func<XElement, TransformNode, TransformNode>> _nodeCreators = new();
+    private static Dictionary<string, Func<XElement, Node, Node>> _nodeCreators = new();
     private static bool _initialized = false;
-    
+
     private static void Initialize()
     {
         if (_initialized) return;
-        
+
         foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
             foreach (Type type in assembly.GetTypes())
@@ -27,7 +27,7 @@ public static class LayoutNodeRegistry
                 if (attribute != null)
                 {
                     _nodeCreators[attribute.Name] = (element, parent) =>
-                        (TransformNode)Activator.CreateInstance(
+                        (Node)Activator.CreateInstance(
                             type,
                             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                             binder: null,
@@ -38,14 +38,14 @@ public static class LayoutNodeRegistry
         }
     }
 
-    public static TransformNode? CreateNode(XElement element, TransformNode parent)
+    public static Node? CreateNode(XElement element, Node parent)
     {
         if (!_initialized)
             Initialize();
-        
+
         if (Dbg.Verify(_nodeCreators.TryGetValue(
                 element.Name.LocalName,
-                out Func<XElement, TransformNode, TransformNode>? creator
+                out Func<XElement, Node, Node>? creator
                 )))
         {
             return creator(element, parent);

@@ -4,16 +4,11 @@ using TomoGame.Core.Sprites;
 
 namespace TomoGame.Core.SceneGraph;
 
-public class LayoutNode : TransformNode
+public class LayoutNode : Node
 {
     public LayoutNode(string layoutFilePath, Node parent) : base(Vector2.Zero, Vector2.Zero, parent)
     {
-        TransformNode? parentTransformNode = parent as TransformNode;
-        if (Dbg.Verify(parentTransformNode != null))
-        {
-            SetSize(parentTransformNode!.WorldRect.Size);
-        }
-        
+        SetSize(parent.WorldRect.Size);
         LoadLayout(layoutFilePath);
     }
 
@@ -21,27 +16,27 @@ public class LayoutNode : TransformNode
     {
         XDocument xmlDoc = XDocument.Load($"Content/{layoutFilePath}");
         XElement root = xmlDoc.Root;
-        TransformNode parentTransformNode = this;
+        Node parentNode = this;
         if (Dbg.Verify(root.Name.LocalName == "Layout"))
         {
             foreach (XElement child in root.Elements())
             {
-                LoadElement(child, parentTransformNode);
+                LoadElement(child, parentNode);
             }
         }
     }
 
-    private void LoadElement(XElement element, TransformNode parentTransformNode)
+    private void LoadElement(XElement element, Node parentNode)
     {
-        TransformNode? newNode = LayoutNodeRegistry.CreateNode(element, parentTransformNode);
+        Node? newNode = LayoutNodeRegistry.CreateNode(element, parentNode);
         if (Dbg.Verify(newNode != null))
         {
-            parentTransformNode = newNode!;
+            parentNode = newNode!;
         }
-        
+
         foreach (XElement child in element.Elements())
         {
-            LoadElement(child, parentTransformNode);
+            LoadElement(child, parentNode);
         }
     }
 }

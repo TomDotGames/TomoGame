@@ -8,7 +8,7 @@ namespace TomoGame.Core.Sprites;
 
 /// <summary>A scene node that renders a sprite, with support for animation and horizontal flipping.</summary>
 [LayoutNode("Sprite")]
-public class SpriteNode : TransformNode
+public class SpriteNode : Node
 {
     private Sprite _sprite;
     private Rectangle _sourceRect;

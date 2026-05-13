@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace TomoGame.Core.SceneGraph;
 
 /// <summary>The root node of the scene graph. Manages the render pipeline and maps scene space to window space.</summary>
-public class SceneRootNode : TransformNode
+public class SceneRootNode : Node
 {
     /// <summary>Determines which axis is fixed when scaling the scene to the window.</summary>
     public enum SceneScaleMode

@@ -3,8 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TomoGame.Core.SceneGraph;
 
-/// <summary>Base class for all scene graph nodes. Manages parent-child relationships and drives the Initialize/Update/Draw lifecycle.</summary>
-public class Node
+/// <summary>Base class for all scene graph nodes. Manages parent-child relationships and drives the Initialize/Update/Draw lifecycle. Transform state (position, size, scale, world rect) is defined in Node.Transform.cs.</summary>
+public partial class Node
 {
     /// <summary>The parent node, or null if this is the root.</summary>
     public Node? Parent { get; private set; }
