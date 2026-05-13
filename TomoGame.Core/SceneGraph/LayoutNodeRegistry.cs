@@ -12,7 +12,7 @@ public class LayoutNodeAttribute : Attribute
 
 public static class LayoutNodeRegistry
 {
-    private static Dictionary<string, Func<XElement, Node, Node>> _nodeCreators = new();
+    private static Dictionary<string, Func<Node?, Node>> _nodeCreators = new();
     private static bool _initialized = false;
 
     private static void Initialize()
@@ -26,16 +26,18 @@ public static class LayoutNodeRegistry
                 LayoutNodeAttribute? attribute = type.GetCustomAttribute<LayoutNodeAttribute>();
                 if (attribute != null)
                 {
-                    _nodeCreators[attribute.Name] = (element, parent) =>
+                    _nodeCreators[attribute.Name] = (parent) =>
                         (Node)Activator.CreateInstance(
                             type,
                             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                             binder: null,
-                            args: new object?[] { element, parent },
+                            args: new object?[] { parent },
                             culture: null)!;
                 }
             }
         }
+
+        _initialized = true;
     }
 
     public static Node? CreateNode(XElement element, Node parent)
@@ -45,10 +47,12 @@ public static class LayoutNodeRegistry
 
         if (Dbg.Verify(_nodeCreators.TryGetValue(
                 element.Name.LocalName,
-                out Func<XElement, Node, Node>? creator
+                out Func<Node?, Node>? creator
                 )))
         {
-            return creator(element, parent);
+            Node node = creator(parent);
+            node.ApplyLayoutAttributes(element);
+            return node;
         }
 
         return null;

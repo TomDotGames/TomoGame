@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Xml.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TomoGame.Core.SceneGraph;
@@ -20,6 +21,7 @@ public partial class Node
     {
         parent?.AddChild(this);
     }
+
 
     internal void Initialize()
     {

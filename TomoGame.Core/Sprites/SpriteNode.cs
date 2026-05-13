@@ -23,13 +23,15 @@ public class SpriteNode : Node
         LoadSprite(spriteName);
     }
 
-    internal SpriteNode(XElement element, Node? parent) : base(element, parent)
+    public override void ApplyLayoutAttributes(XElement element)
     {
         XAttribute? src = element.Attribute("src");
         if (src != null)
         {
             LoadSprite(src.Value);
         }
+        
+        base.ApplyLayoutAttributes(element);
     }
 
     private void LoadSprite(string spriteName)
