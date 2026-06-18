@@ -8,7 +8,7 @@ public class LayoutNode : Node
 {
     public LayoutNode(string layoutFilePath, Node parent) : base(Vector2.Zero, Vector2.Zero, parent)
     {
-        SetSize(parent.WorldRect.Size);
+        SetIntrinsicSize(parent.WorldRect.Size);
         LoadLayout(layoutFilePath);
     }
 

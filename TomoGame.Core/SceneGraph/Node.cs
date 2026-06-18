@@ -22,7 +22,6 @@ public partial class Node
         parent?.AddChild(this);
     }
 
-
     internal void Initialize()
     {
         _initialized = true;

@@ -30,7 +30,7 @@ public class SceneRootNode : Node
         _sceneDrawScale = windowSize / size;
         float width = viewport.Width / _sceneDrawScale;
         float height = viewport.Height / _sceneDrawScale;
-        SetSize(width, height);
+        SetIntrinsicSize(width, height);
     }
 
     protected override void OnInitialize()

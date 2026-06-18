@@ -6,25 +6,21 @@ namespace TomoGame.Core.SceneGraph;
 [LayoutNode("Transform")]
 public partial class Node
 {
-    private Vector2 _sizeUnscaled;
-    private Vector2 _localScale = Vector2.One;
-    private Vector2 _localPosition;
+    private Rect _localRect; // the rect of this transform with intrinsic size, in parent's intrinsic space
 
-    /// <summary>This node's accumulated world-space scale.</summary>
+    public Rect WorldRect => _worldRect;
+    public Vector2 WorldPosition => _worldRect.Min;
+    private Rect _worldRect;
+    
+    private Vector2 _localScale = Vector2.One;
+
     public Vector2 WorldScale => _worldScale;
     private Vector2 _worldScale = Vector2.One;
 
-    /// <summary>This node's bounding rectangle in world space.</summary>
-    public Rect WorldRect => _worldRect;
-    private Rect _worldRect;
-
-    /// <summary>This node's position in world space.</summary>
-    public Vector2 WorldPosition => _worldRect.Min;
-
     public Node(Vector2 localPosition, Vector2 size, Node? parent = null) : this(parent)
     {
-        _localPosition = localPosition;
-        _sizeUnscaled = size;
+        _localRect.Min = localPosition;
+        _localRect.Size = size;
         ComputeWorldTransform();
     }
     
@@ -38,14 +34,10 @@ public partial class Node
                 return;
              
             Vector2 selfAnchorUV = AnchorPositionFromString(tokens[0]);
-            Vector2 selfAnchor = UVToLocalPosition(selfAnchorUV);
-            
             Vector2 parentAnchorUV = AnchorPositionFromString(tokens[1]);
-            Vector2 parentAnchor = UVToLocalPosition(parentAnchorUV);
-            
             Vector2 offset = new Vector2(float.Parse(tokens[2]), float.Parse(tokens[3]));
-            _localPosition = (selfAnchor - parentAnchor) + offset;
-            ComputeWorldTransform();
+            
+            SetPositionInParentSpace(selfAnchorUV, parentAnchorUV, offset);
         }
     }
 
@@ -53,7 +45,6 @@ public partial class Node
     {
         if (!Dbg.Verify(anchorPos.Length == 2))
             return Vector2.Zero;
-
 
         Dictionary<char, float> anchorMapY = new()
         {
@@ -76,43 +67,48 @@ public partial class Node
         return new Vector2(xAnchor, yAnchor);
     }
 
-    private Vector2 UVToLocalPosition(Vector2 uv)
+    public void SetIntrinsicSize(float width, float height)
     {
-        return uv * _sizeUnscaled * _localScale;
+        SetIntrinsicSize(new Vector2(width, height));
     }
 
-    public void SetSize(float width, float height)
+    public void SetIntrinsicSize(Vector2 size)
     {
-        SetSize(new Vector2(width, height));
-    }
-
-    /// <summary>Sets the size of this node.</summary>
-    public void SetSize(Vector2 size)
-    {
-        _sizeUnscaled = size;
+        _localRect.Size = size;
         ComputeWorldTransform();
     }
 
-    /// <summary>Moves this node by the given offset in local space.</summary>
-    public void Translate(Vector2 offset)
+    public void SetPositionInParentSpace(Vector2 selfAnchorUV, Vector2 parentAnchorUV, Vector2 offset)
     {
-        _localPosition += offset;
+        Vector2 parentAnchor = Parent?.UVToIntrinsicPosition(parentAnchorUV) ?? Vector2.Zero;
+        Vector2 selfAnchor = UVToIntrinsicPosition(selfAnchorUV);
+        _localRect.Min = (parentAnchor - selfAnchor) + offset;
+        
         ComputeWorldTransform();
     }
 
     private void ComputeWorldTransform()
     {
-        Node? parent = Parent;
-        Vector2 parentWorldScale = parent?.WorldScale ?? Vector2.One;
-        _worldScale = parentWorldScale * _localScale;
-        _worldRect.Size = _sizeUnscaled * _worldScale;
+        Vector2 parentWorldScale = Parent != null ? Parent.WorldScale : Vector2.One;
+        Vector2 parentWorldPosition = Parent != null ? Parent.WorldPosition : Vector2.Zero;
+        _worldScale = _localScale * parentWorldScale;
+        _worldRect.Min = parentWorldPosition + (_localRect.Min * parentWorldScale);
+        _worldRect.Size = _localRect.Size * _worldScale;
 
-        Vector2 parentWorldPosition = parent?.WorldRect.Min ?? Vector2.Zero;
-        _worldRect.Min = parentWorldPosition + (_localPosition * parentWorldScale);
-        
         foreach (Node child in _children)
         {
             child.ComputeWorldTransform();
         }
+    }
+
+    private Vector2 UVToIntrinsicPosition(Vector2 UV)
+    {
+        return new Vector2(UV.X * _localRect.Width, UV.Y * _localRect.Height);
+    }
+
+    public void Translate(Vector2 delta)
+    {
+        _localRect.Min += delta;
+        ComputeWorldTransform();
     }
 }

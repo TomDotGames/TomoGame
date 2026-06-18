@@ -10,13 +10,18 @@ namespace TomoGame.Core.Sprites;
 [LayoutNode("Sprite")]
 public class SpriteNode : Node
 {
-    private Sprite _sprite;
+    private Sprite _sprite = null!;
     private Rectangle _sourceRect;
     private AnimationPlayer _animationPlayer = new();
 
     /// <summary>When true, the sprite is rendered flipped horizontally.</summary>
     public bool FlipX { get; set; }
 
+    internal SpriteNode(Node? parent = null) : base(parent)
+    {
+        
+    }
+    
     /// <summary>Creates a sprite node using the named sprite from the <see cref="ResourceManager"/>.</summary>
     public SpriteNode(string spriteName, Vector2 localPosition, Node? parent = null) : base(localPosition, Vector2.Zero, parent)
     {
@@ -38,7 +43,7 @@ public class SpriteNode : Node
     {
         _sprite = ResourceManager.Instance!.GetSprite(spriteName);
         _sourceRect = _sprite.SourceRect;
-        SetSize(_sprite.SourceRect.Width, _sprite.SourceRect.Height);
+        SetIntrinsicSize(_sprite.SourceRect.Width, _sprite.SourceRect.Height);
     }
 
     protected override void OnDraw(SpriteBatch spriteBatch)

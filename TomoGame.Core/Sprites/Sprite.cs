@@ -58,4 +58,4 @@ public class Sprite
     {
         return _animations.TryGetValue(name, out Animation animation) ? animation : null;
     }
-}
+}        

@@ -26,4 +26,4 @@ public class SamplesGame : GameBase
         SceneRootNode scene = new UIScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40);
         SetScene(scene);
     }
-}
+ }
