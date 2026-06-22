@@ -45,10 +45,8 @@ public static class LayoutNodeRegistry
         if (!_initialized)
             Initialize();
 
-        if (Dbg.Verify(_nodeCreators.TryGetValue(
-                element.Name.LocalName,
-                out Func<Node?, Node>? creator
-                )))
+        _nodeCreators.TryGetValue(element.Name.LocalName, out Func<Node?, Node>? creator);
+        if (Dbg.Verify(creator))
         {
             Node node = creator(parent);
             node.ApplyLayoutAttributes(element);

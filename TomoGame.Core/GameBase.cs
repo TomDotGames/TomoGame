@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using TomoGame.Core.Input;
 using TomoGame.Core.SceneGraph;
 using TomoGame.Core.Resources;
 
@@ -9,6 +10,7 @@ public class GameBase : Game
 {
     private GraphicsDeviceManager _graphicsDeviceManager;
     private ResourceManager? _resourceManager;
+    private InputManager? _inputManager;
     private SceneRootNode? _rootNode;
     private int _windowWidth;
     private int _windowHeight;
@@ -36,7 +38,8 @@ public class GameBase : Game
         Log.InitOutputFile("game.log");
 
         _resourceManager = new ResourceManager(Services);
-
+        _inputManager = new InputManager(this);
+        
         _graphicsDeviceManager.PreferredBackBufferWidth = _windowWidth;
         _graphicsDeviceManager.PreferredBackBufferHeight = _windowHeight;
         _graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;

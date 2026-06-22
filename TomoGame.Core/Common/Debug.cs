@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace TomoGame.Core;
@@ -39,5 +40,16 @@ public static class Dbg
         }
         #endif
         return condition;
+    }
+
+    /// <summary>
+    /// Asserts in debug builds if <paramref name="value"/> is null. Returns true when non-null, narrowing
+    /// nullability for the caller so no null-forgiving operator is needed:
+    /// <code>if (!Verify(maybeNull)) return;  // maybeNull is non-null below</code>
+    /// </summary>
+    [DebuggerHidden, StackTraceHidden]
+    public static bool Verify<T>([NotNullWhen(true)] T? value, string? message = null) where T : class
+    {
+        return Verify(value != null, message);
     }
 }

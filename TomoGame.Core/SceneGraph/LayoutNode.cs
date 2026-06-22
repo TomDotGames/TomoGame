@@ -15,7 +15,10 @@ public class LayoutNode : Node
     private void LoadLayout(string layoutFilePath)
     {
         XDocument xmlDoc = XDocument.Load($"Content/{layoutFilePath}");
-        XElement root = xmlDoc.Root;
+        XElement? root = xmlDoc.Root;
+        if (!Dbg.Verify(root))
+            return;
+
         Node parentNode = this;
         if (Dbg.Verify(root.Name.LocalName == "Layout"))
         {

@@ -15,7 +15,7 @@ public class ResourceManager
     private SpriteRegistry _spriteRegistry;
 
     /// <summary>Creates a new ResourceManager. Only one instance may exist at a time.</summary>
-    public ResourceManager(IServiceProvider serviceProvider)
+    internal ResourceManager(IServiceProvider serviceProvider)
     {
         Dbg.Assert(Instance == null);
         Instance = this;
