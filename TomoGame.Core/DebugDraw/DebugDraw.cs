@@ -40,7 +40,7 @@ public static class DebugDraw
     }
 
     /// <summary>Draws the world rect of a <see cref="Node"/>, and optionally all of its children recursively.</summary>
-    public static void NodeRect(Node node, Color color, float thickness = 1f, bool recursive = true)
+    public static void NodeBounds(Node node, Color color, float thickness = 1f, bool recursive = true)
     {
         EnsureDrawNode();
 
@@ -50,7 +50,7 @@ public static class DebugDraw
 
         foreach (Node child in node.Children)
         {
-            NodeRect(child, color, thickness, recursive);
+            NodeBounds(child, color, thickness, recursive);
         }
     }
 }

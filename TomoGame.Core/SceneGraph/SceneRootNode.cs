@@ -19,7 +19,7 @@ public class SceneRootNode : Node
     private SpriteBatch _spriteBatch = null!;
 
     public SceneRootNode(GraphicsDeviceManager graphics, SceneScaleMode scaleMode, int size)
-        : base(Vector2.Zero, Vector2.Zero)
+        : base(null)
     {
         Dbg.Assert(size > 0);
 
@@ -30,7 +30,7 @@ public class SceneRootNode : Node
         _sceneDrawScale = windowSize / size;
         float width = viewport.Width / _sceneDrawScale;
         float height = viewport.Height / _sceneDrawScale;
-        SetIntrinsicSize(width, height);
+        IntrinsicSize = new Vector2(width, height);
     }
 
     protected override void OnInitialize()

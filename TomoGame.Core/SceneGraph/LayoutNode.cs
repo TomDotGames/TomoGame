@@ -6,9 +6,8 @@ namespace TomoGame.Core.SceneGraph;
 
 public class LayoutNode : Node
 {
-    public LayoutNode(string layoutFilePath, Node parent) : base(Vector2.Zero, Vector2.Zero, parent)
+    public LayoutNode(string layoutFilePath, Node parent) : base(parent)
     {
-        SetIntrinsicSize(parent.WorldRect.Size);
         LoadLayout(layoutFilePath);
     }
 

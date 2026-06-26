@@ -16,7 +16,5 @@ public class UIScene : SceneRootNode
     protected override void OnDraw(SpriteBatch spriteBatch)
     {
         base.OnDraw(spriteBatch);
-        
-        DebugDraw.NodeRect(this, Color.White);
     }
 }

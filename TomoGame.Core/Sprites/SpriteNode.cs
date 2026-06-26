@@ -23,9 +23,10 @@ public class SpriteNode : Node
     }
     
     /// <summary>Creates a sprite node using the named sprite from the <see cref="ResourceManager"/>.</summary>
-    public SpriteNode(string spriteName, Vector2 localPosition, Node? parent = null) : base(localPosition, Vector2.Zero, parent)
+    public SpriteNode(string spriteName, Vector2 localPosition, Node? parent = null) : base(parent)
     {
         LoadSprite(spriteName);
+        LocalPosition = localPosition;
     }
 
     public override void ApplyLayoutAttributes(XElement element)
@@ -43,7 +44,7 @@ public class SpriteNode : Node
     {
         _sprite = ResourceManager.Instance!.GetSprite(spriteName);
         _sourceRect = _sprite.SourceRect;
-        SetIntrinsicSize(_sprite.SourceRect.Width, _sprite.SourceRect.Height);
+        IntrinsicSize = new Vector2(_sprite.SourceRect.Width, _sprite.SourceRect.Height);
     }
 
     protected override void OnDraw(SpriteBatch spriteBatch)

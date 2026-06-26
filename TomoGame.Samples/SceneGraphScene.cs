@@ -8,11 +8,11 @@ public class SceneGraphScene : SceneRootNode
 {
     public SceneGraphScene(GraphicsDeviceManager graphics, SceneScaleMode scaleMode, int size) : base(graphics, scaleMode, size)
     {
-        Node anotherNode = new Node(new Vector2(10, 20), new Vector2(4, 8), this);
+        Node anotherNode = new Node(new Vector2(10, 20), this);
     }
     
     protected override void OnUpdate(GameTime gameTime)
     {
-        DebugDraw.NodeRect(this, Color.BlueViolet);
+        DebugDraw.NodeBounds(this, Color.BlueViolet);
     }
 }

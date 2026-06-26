@@ -30,7 +30,7 @@ public class SpriteScene : SceneRootNode
         if (_dogGoingRight)
         {
             _dog.FlipX = false;
-            _dog.Translate(new Vector2(moveAmount, 0));
+            _dog.TranslateInLocalSpace(new Vector2(moveAmount, 0));
             if (_dog.WorldPosition.X > 30)
             {
                 _dogGoingRight = false;
@@ -39,7 +39,7 @@ public class SpriteScene : SceneRootNode
         else
         {
             _dog.FlipX = true;
-            _dog.Translate(new Vector2(-moveAmount, 0));
+            _dog.TranslateInLocalSpace(new Vector2(-moveAmount, 0));
             if (_dog.WorldPosition.X < 5)
             {
                 _dogGoingRight = true;
