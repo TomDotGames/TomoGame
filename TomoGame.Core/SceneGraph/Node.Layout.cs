@@ -15,11 +15,13 @@ public partial class Node
             if (!Dbg.Verify(tokens.Length == 4))
                 return;
 
-            Vector2 selfAnchorUV = AnchorPositionFromString(tokens[0]);
-            Vector2 parentAnchorUV = AnchorPositionFromString(tokens[1]);
-            Vector2 offset = new Vector2(float.Parse(tokens[2]), float.Parse(tokens[3]));
+            OriginUV = AnchorPositionFromString(tokens[0]);
             
-            //SetPositionInParentSpace(selfAnchorUV, parentAnchorUV, offset);
+            Vector2 parentAnchorUV = AnchorPositionFromString(tokens[1]);
+            Vector2 parentAnchor = Parent?.UVToLocalSpace(parentAnchorUV) ?? Vector2.Zero;
+            
+            Vector2 offset = new Vector2(float.Parse(tokens[2]), float.Parse(tokens[3]));
+            LocalPosition = parentAnchor + offset;
         }
     }
 

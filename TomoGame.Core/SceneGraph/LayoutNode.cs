@@ -8,6 +8,7 @@ public class LayoutNode : Node
 {
     public LayoutNode(string layoutFilePath, Node parent) : base(parent)
     {
+        LocalSize = parent.LocalSize;
         LoadLayout(layoutFilePath);
     }
 

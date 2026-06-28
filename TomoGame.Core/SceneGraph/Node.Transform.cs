@@ -19,6 +19,7 @@ public partial class Node
     }
     
     private bool _worldTransformIsDirty = true;
+
     private Vector2 _size;
 
     public float LocalScale => _localTransform.Scale;
@@ -53,16 +54,31 @@ public partial class Node
         get => WorldTransform.Position;
         set => _worldTransform.Position = value;
     }
+
+    public Vector2 OriginUV { get; set; }
     
-    // todo: need to take into account the origin here!
-    public Rect LocalRect => new Rect(LocalPosition, LocalSize);
-    public Rect WorldRect => new Rect(WorldPosition, WorldSize);
+    public Rect LocalRect
+    {
+        get
+        {
+            Vector2 origin = UVToLocalSpace(OriginUV);
+            return new Rect(LocalPosition - origin, LocalSize);
+        }
+    }
+
+    public Rect WorldRect
+    {
+        get
+        {
+            Vector2 origin = new Vector2(WorldSize.X * OriginUV.X, WorldSize.Y * OriginUV.Y);
+            return new Rect(WorldPosition - origin, WorldSize);
+        }
+    }
     
     public Node(Vector2 localPosition, Node? parent = null) : this(parent)
     {
         LocalPosition = localPosition;
     }
-
     
     public Node(Vector2 localPosition, Vector2 size, Node? parent = null) : this(localPosition, parent)
     {
@@ -73,6 +89,11 @@ public partial class Node
     {
         _localTransform.Position += translation;
          MarkWorldTransformDirty();
+    }
+
+    public Vector2 UVToLocalSpace(Vector2 uv)
+    {
+        return new Vector2(uv.X * LocalSize.X,  uv.Y * LocalSize.Y);
     }
 
     private void MarkWorldTransformDirty()

@@ -11,6 +11,7 @@ public class SamplesGame : GameBase
 {
     public SamplesGame() : base(400, 600)
     {
+        IsMouseVisible = true;
     }
 
     protected override void LoadContent()
@@ -23,7 +24,7 @@ public class SamplesGame : GameBase
     {
         base.Initialize();
 
-        SceneRootNode scene = new SpriteScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40);
+        SceneRootNode scene = new UIScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40);
         SetScene(scene);
     }
  }

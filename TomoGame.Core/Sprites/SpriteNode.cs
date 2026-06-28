@@ -51,7 +51,7 @@ public class SpriteNode : Node
     {
         base.OnDraw(spriteBatch);
         SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        spriteBatch.Draw(_sprite.Texture, WorldPosition, _sourceRect, Color.White, 0f, Vector2.Zero, Vector2.One,
+        spriteBatch.Draw(_sprite.Texture, WorldRect.Min, _sourceRect, Color.White, 0f, Vector2.Zero, Vector2.One,
             effects, 0f);
     }
 

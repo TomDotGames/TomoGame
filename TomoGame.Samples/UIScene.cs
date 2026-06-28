@@ -12,9 +12,4 @@ public class UIScene : SceneRootNode
     {
         LayoutNode layout = new LayoutNode("UI/UISceneLayout.xml", this);
     }
-
-    protected override void OnDraw(SpriteBatch spriteBatch)
-    {
-        base.OnDraw(spriteBatch);
-    }
 }
