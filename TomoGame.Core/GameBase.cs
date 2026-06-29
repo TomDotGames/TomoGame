@@ -11,7 +11,6 @@ public class GameBase : Game
     private GraphicsDeviceManager _graphicsDeviceManager;
     private ResourceManager? _resourceManager;
     private InputManager? _inputManager;
-    private SceneRootNode? _rootNode;
     private int _windowWidth;
     private int _windowHeight;
 
@@ -21,8 +20,9 @@ public class GameBase : Game
     /// <summary>The graphics device manager.</summary>
     protected GraphicsDeviceManager Graphics => _graphicsDeviceManager;
 
-    /// <summary>The root node of the active scene.</summary>
-    public SceneRootNode? SceneRoot => _rootNode;
+    private Dictionary<string, SceneRootNode> _scenes =  new Dictionary<string, SceneRootNode>();
+    private SceneRootNode? _currentRootNode;
+    public SceneRootNode? SceneRoot => _currentRootNode;
 
     protected GameBase(int width, int height) : base()
     {
@@ -51,29 +51,44 @@ public class GameBase : Game
     protected override void Update(GameTime gameTime)
     {
         Time.Set(gameTime);
-        _rootNode?.Update(gameTime);
+        _currentRootNode?.Update(gameTime);
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        _rootNode?.DrawScene();
+        _currentRootNode?.DrawScene();
         base.Draw(gameTime);
+    }
+
+    public Vector2 ViewportToScenePosition(Vector2 viewportPosition)
+    {
+        if (!Dbg.Verify(_currentRootNode != null))
+            return Vector2.Zero;
+        
+        return new Vector2(viewportPosition.X / _currentRootNode.DrawScale, viewportPosition.Y / _currentRootNode.DrawScale);
+    }
+
+    protected void AddScene(string name, SceneRootNode sceneRootNode)
+    {
+        Dbg.Assert(!_scenes.ContainsKey(name));
+        _scenes[name] = sceneRootNode;
     }
 
     /// <summary>Sets the active scene.</summary>
     protected void SetScene(SceneRootNode sceneRootNode)
     {
         Dbg.Assert(GraphicsDevice != null);
-        _rootNode = sceneRootNode;
-        _rootNode.Initialize();
+        _currentRootNode = sceneRootNode;
+        _currentRootNode.Initialize();
     }
-
-    public Vector2 ViewportToScenePosition(Vector2 viewportPosition)
+    
+    public void SetScene(string name)
     {
-        if (!Dbg.Verify(_rootNode != null))
-            return Vector2.Zero;
+        _scenes.TryGetValue(name, out SceneRootNode? sceneRootNode);
+        if (!Dbg.Verify(sceneRootNode != null))
+            return;
         
-        return new Vector2(viewportPosition.X / _rootNode.DrawScale, viewportPosition.Y / _rootNode.DrawScale);
+        SetScene(sceneRootNode);
     }
 }

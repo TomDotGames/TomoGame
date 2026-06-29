@@ -6,6 +6,8 @@ namespace TomoGame.Core.SceneGraph;
 
 public class LayoutNode : Node
 {
+    private Dictionary<string, Node> _namedNodes = new Dictionary<string, Node>();
+    
     public LayoutNode(string layoutFilePath, Node parent) : base(parent)
     {
         LocalSize = parent.LocalSize;
@@ -34,6 +36,11 @@ public class LayoutNode : Node
         Node? newNode = LayoutNodeRegistry.CreateNode(element, parentNode);
         if (Dbg.Verify(newNode != null))
         {
+            if (newNode.Name != null && newNode.Name.Length > 0)
+            {
+                Dbg.Assert(!_namedNodes.ContainsKey(newNode.Name));
+                _namedNodes[newNode.Name] = newNode;
+            }
             parentNode = newNode!;
         }
 
@@ -41,5 +48,10 @@ public class LayoutNode : Node
         {
             LoadElement(child, parentNode);
         }
+    }
+
+    public Node? FindNode(string name)
+    {
+        return _namedNodes.GetValueOrDefault(name);
     }
 }

@@ -15,9 +15,9 @@ public class Button : Node
     private readonly NodePointable _pointable;
 
     private Sprite _upSprite;
-    private Sprite _hoveredSprite;
-    private Sprite _downSprite;
-    private Sprite _disabledSprite;
+    private Sprite? _hoveredSprite;
+    private Sprite? _downSprite;
+    private Sprite? _disabledSprite;
     
     public event Action? Clicked;
 

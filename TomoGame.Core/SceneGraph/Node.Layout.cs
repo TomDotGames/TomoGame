@@ -6,6 +6,8 @@ namespace TomoGame.Core.SceneGraph;
 [LayoutNode("Transform")]
 public partial class Node
 {
+    public string Name { get; private set; }
+
     public virtual void ApplyLayoutAttributes(XElement element)
     {
         XAttribute? pos = element.Attribute("pos");
@@ -22,6 +24,12 @@ public partial class Node
             
             Vector2 offset = new Vector2(float.Parse(tokens[2]), float.Parse(tokens[3]));
             LocalPosition = parentAnchor + offset;
+        }
+        
+        XAttribute? name = element.Attribute("name");
+        if (name != null)
+        {
+            Name = name.Value;
         }
     }
 
