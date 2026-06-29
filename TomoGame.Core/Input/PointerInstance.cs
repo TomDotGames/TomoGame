@@ -53,9 +53,11 @@ public class PointerInstance
         // get a list of all pointables that this pointer is inside
         List<Pointable> pointablesOver = new();
         List<Pointable> nonInteractablePointables = new();
+
+        Vector2 scenePosition = GameBase.Instance.ViewportToScenePosition(Position);
         foreach (Pointable pointable in pointables)
         {
-            if (pointable.IsPointInside(Position))
+            if (pointable.IsPointInside(scenePosition))
             {
                 pointablesOver.Add(pointable);
             }

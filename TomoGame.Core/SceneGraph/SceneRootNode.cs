@@ -15,6 +15,7 @@ public class SceneRootNode : Node
         FixedWidth
     }
 
+    public float DrawScale => _sceneDrawScale;
     private readonly float _sceneDrawScale;
     private SpriteBatch _spriteBatch = null!;
 

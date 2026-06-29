@@ -69,4 +69,9 @@ public class ResourceManager
     {
         return _spriteRegistry.GetSprite(name);
     }
+
+    public Sprite? TryGetSprite(string name)
+    {
+        return _spriteRegistry.TryGetSprite(name);
+    }
 }

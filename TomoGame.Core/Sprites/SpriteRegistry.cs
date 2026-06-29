@@ -77,4 +77,10 @@ public class SpriteRegistry
         Dbg.Assert(_sprites.ContainsKey(name));
         return _sprites[name];
     }
+
+    public Sprite? TryGetSprite(string name)
+    {
+        name = name.ToLower();
+        return _sprites.GetValueOrDefault(name);
+    }
 }

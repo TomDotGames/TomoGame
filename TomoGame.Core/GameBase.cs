@@ -68,4 +68,12 @@ public class GameBase : Game
         _rootNode = sceneRootNode;
         _rootNode.Initialize();
     }
+
+    public Vector2 ViewportToScenePosition(Vector2 viewportPosition)
+    {
+        if (!Dbg.Verify(_rootNode != null))
+            return Vector2.Zero;
+        
+        return new Vector2(viewportPosition.X / _rootNode.DrawScale, viewportPosition.Y / _rootNode.DrawScale);
+    }
 }

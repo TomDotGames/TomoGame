@@ -26,10 +26,12 @@ public abstract class Pointable
     private List<PointerInstance> _pointersInside = new();
     /// <summary>True if the given pointer is currently inside this pointable.</summary>
     public bool IsPointerInside(PointerInstance pointer) => _pointersInside.Contains(pointer);
+    public bool IsAnyPointerInside => _pointersInside.Count > 0;
 
     private List<PointerInstance> _pointersSelecting = new();
     /// <summary>True if the given pointer is currently selecting this pointable.</summary>
     public bool IsPointerSelecting(PointerInstance pointer) => _pointersSelecting.Contains(pointer);
+    public bool IsAnyPointerSelecting => _pointersSelecting.Count > 0;
 
     /// <summary>Returns true if the given point (in screen space) is inside this pointable.</summary>
     public abstract bool IsPointInside(Vector2 point);
