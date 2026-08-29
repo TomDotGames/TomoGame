@@ -12,10 +12,12 @@ public partial class Node
 
     private readonly List<Node> _children = [];
 
-    /// <summary>The children of this node.</summary>
+    /// <summary>The children of this node. A child that has been destroyed is skipped by Update and Draw
+    /// immediately, but remains in this collection until its parent's next traversal unlinks it — check
+    /// <see cref="IsDestroyed"/> when enumerating during a frame.</summary>
     public IReadOnlyCollection<Node> Children => _children;
 
-    private readonly List<Node> _pendingRemovals = [];
+    private List<Node>? _pendingRemovals; // allocated on first removal; most nodes never need one
 
     private bool _initialized;
     private bool _destroyed;
@@ -147,12 +149,13 @@ public partial class Node
 
     private void ScheduleRemoval(Node node)
     {
+        _pendingRemovals ??= [];
         _pendingRemovals.Add(node);
     }
 
     private void ProcessPendingRemovals()
     {
-        if (_pendingRemovals.Count == 0) return;
+        if (_pendingRemovals == null || _pendingRemovals.Count == 0) return;
 
         foreach (Node node in _pendingRemovals)
         {

@@ -50,7 +50,10 @@ public class SpriteNode : Node
     {
         base.OnDraw(spriteBatch);
         SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        Vector2 origin = new(Anchor.X * _sourceRect.Width, Anchor.Y * _sourceRect.Height);
+        // origin must be the anchor expressed in the node's own space: SpriteBatch multiplies it by
+        // scale, so deriving it from IntrinsicSize keeps it consistent with WorldAnchorPosition even
+        // when the intrinsic size has been set to something other than the source rect
+        Vector2 origin = IntrinsicSize * Anchor;
         spriteBatch.Draw(_sprite.Texture, WorldAnchorPosition, _sourceRect, Color.White, WorldRotation, origin,
             WorldScale, effects, 0f);
     }
