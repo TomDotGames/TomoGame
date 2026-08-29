@@ -51,8 +51,11 @@ public class SceneRootNode : Node
         Matrix baseTransform = Matrix.CreateScale(_sceneDrawScale);
 
         graphicsDevice.Clear(Color.ForestGreen);
+        // Deferred draws in submission order, which is the scene graph's own order: parents before children,
+        // siblings in the order they were added. FrontToBack sorted on a layerDepth every node left at 0,
+        // so equal keys came out in an arbitrary order and children could land behind their parents.
         _spriteBatch.Begin(
-            SpriteSortMode.FrontToBack,
+            SpriteSortMode.Deferred,
             BlendState.AlphaBlend,
             SamplerState.PointClamp,
             DepthStencilState.Default,

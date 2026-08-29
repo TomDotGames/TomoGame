@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using TomoGame.Core;
 using TomoGame.Core.SceneGraph;
+using TomoGame.Core.Resources;
 using TomoGame.Core.Sprites;
+using TomoGame.Core.Text;
 using TomoGame.UI;
 
 namespace TomoGame.Samples;
@@ -16,28 +18,44 @@ public class ButtonScene : SceneRootNode
 
     private readonly Button _addButton;
     private readonly Button _removeButton;
+    private readonly Label _countLabel;
     private readonly List<SpriteNode> _flowers = [];
 
     public ButtonScene(GraphicsDeviceManager graphics, SceneScaleMode scaleMode, int size)
         : base(graphics, scaleMode, size)
     {
-        _addButton = CreateButton(-8f);
+        BitmapFont font = ResourceManager.Instance!.GetFont("Fonts/Tiny");
+
+        _addButton = CreateButton(-8f, "ADD", font);
         _addButton.Clicked += _ => AddFlower();
 
-        _removeButton = CreateButton(4f);
+        _removeButton = CreateButton(4f, "REMOVE", font);
         _removeButton.Clicked += _ => RemoveFlower();
+
+        // a label is just a node, so it anchors into the scene like anything else
+        _countLabel = new Label(string.Empty, font, 2.5f, this);
+        _countLabel.Anchor = new Vector2(0.5f, 0f);
+        _countLabel.SetPositionInParentSpace(new Vector2(0.5f, 0f), new Vector2(0f, 4f));
 
         RefreshButtons();
     }
 
     /// <summary>Makes a button of a fixed size - the sprite stretches to fill it rather than staying at its
     /// own 32x8 - centred horizontally and offset from the middle of the scene.</summary>
-    private Button CreateButton(float offsetY)
+    private Button CreateButton(float offsetY, string caption, BitmapFont font)
     {
         Button button = new Button("Sprites/Button", this);
         button.Anchor = new Vector2(0.5f, 0.5f);
         button.SetIntrinsicSize(ButtonSize);
         button.SetPositionInParentSpace(new Vector2(0.5f, 0.5f), new Vector2(0f, offsetY));
+
+        // parenting the caption to the button means it inherits the button's position, and draws over the
+        // button's sprite because it was added to the graph after it
+        Label label = new Label(caption, font, 3f, button);
+        label.Anchor = new Vector2(0.5f, 0.5f);
+        label.SetPositionInParentSpace(new Vector2(0.5f, 0.5f), Vector2.Zero);
+        label.Color = Color.White;
+
         return button;
     }
 
@@ -75,5 +93,6 @@ public class ButtonScene : SceneRootNode
     {
         _addButton.Interactable = _flowers.Count < MaxFlowers;
         _removeButton.Interactable = _flowers.Count > 0;
+        _countLabel.Text = $"FLOWERS: {_flowers.Count}";
     }
 }
