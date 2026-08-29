@@ -27,22 +27,45 @@ public abstract class Pointable
     /// <summary>True if the given pointer is currently inside this pointable.</summary>
     public bool IsPointerInside(PointerInstance pointer) => _pointersInside.Contains(pointer);
 
+    /// <summary>True while any pointer is inside this pointable.</summary>
+    public bool IsAnyPointerInside => _pointersInside.Count > 0;
+
     private List<PointerInstance> _pointersSelecting = new();
     /// <summary>True if the given pointer is currently selecting this pointable.</summary>
     public bool IsPointerSelecting(PointerInstance pointer) => _pointersSelecting.Contains(pointer);
 
-    /// <summary>Returns true if the given point (in screen space) is inside this pointable.</summary>
+    /// <summary>True while any pointer is selecting this pointable.</summary>
+    public bool IsAnyPointerSelecting => _pointersSelecting.Count > 0;
+
+    /// <summary>Returns true if the given point (in scene units) is inside this pointable.</summary>
     public abstract bool IsPointInside(Vector2 point);
+
+    private bool _registered;
 
     /// <summary>Registers this pointable with the <see cref="InputManager"/>.</summary>
     public Pointable()
     {
         InputManager.Instance!.RegisterPointable(this);
+        _registered = true;
+    }
+
+    /// <summary>Stops this pointable receiving pointer interactions. Call this when whatever owns the
+    /// pointable goes away; the finalizer is only a backstop and does not run at a predictable time.
+    /// Safe to call more than once.</summary>
+    public void Unregister()
+    {
+        if (!_registered)
+            return;
+
+        _registered = false;
+        InputManager.Instance?.UnregisterPointable(this);
+        GC.SuppressFinalize(this);
     }
 
     ~Pointable()
     {
-        InputManager.Instance!.UnregisterPointable(this);
+        if (_registered)
+            InputManager.Instance?.UnregisterPointable(this);
     }
 
     /// <summary>Called when a pointer enters this pointable. Raises <see cref="Entered"/>.</summary>

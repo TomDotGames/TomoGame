@@ -39,15 +39,27 @@ public class SpriteNode : Node
         base.ApplyLayoutAttributes(element);
     }
 
-    private void LoadSprite(string spriteName)
+    /// <summary>Swaps the sprite being drawn, leaving the node's size alone so a node that has been sized
+    /// deliberately keeps that size. Call <see cref="SizeToSprite"/> afterwards to adopt the new sprite's size.</summary>
+    public void SetSprite(string spriteName)
     {
         _sprite = ResourceManager.Instance!.GetSprite(spriteName);
         _sourceRect = _sprite.SourceRect;
 
         // the draw stretches the source onto the node's rect, so a degenerate source has nothing to map from
         Dbg.Verify(_sourceRect.Width > 0 && _sourceRect.Height > 0, $"sprite '{spriteName}' has an empty source rect");
+    }
 
+    /// <summary>Resizes the node to its sprite's source rect, so the sprite renders at its natural size.</summary>
+    public void SizeToSprite()
+    {
         SetIntrinsicSize(_sourceRect.Width, _sourceRect.Height);
+    }
+
+    private void LoadSprite(string spriteName)
+    {
+        SetSprite(spriteName);
+        SizeToSprite();
     }
 
     protected override void OnDraw(SpriteBatch spriteBatch)

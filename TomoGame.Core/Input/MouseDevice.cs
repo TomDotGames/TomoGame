@@ -1,4 +1,6 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using TomoGame.Core.SceneGraph;
 
 namespace TomoGame.Core.Input;
 
@@ -17,7 +19,12 @@ internal class MouseDevice : PointerDevice
     protected override void UpdatePointers()
     {
         MouseState mouseState = Mouse.GetState();
-        _pointer.Position = mouseState.Position.ToVector2();
+
+        // the mouse reports window pixels; everything downstream works in scene units
+        Vector2 screenPosition = mouseState.Position.ToVector2();
+        SceneRootNode? sceneRoot = GameBase.Instance?.SceneRoot;
+        _pointer.Position = sceneRoot != null ? sceneRoot.ScreenToScene(screenPosition) : screenPosition;
+
         _pointer.SetIsSelecting(mouseState.LeftButton == ButtonState.Pressed);
     }
 }

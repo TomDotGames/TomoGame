@@ -33,6 +33,13 @@ public class SceneRootNode : Node
         SetIntrinsicSize(width, height);
     }
 
+    /// <summary>Converts a position in window pixels to scene units. Pointer input arrives in window pixels,
+    /// while every node's rect is in scene units, so hit tests must go through here.</summary>
+    public Vector2 ScreenToScene(Vector2 screenPosition)
+    {
+        return screenPosition / _sceneDrawScale;
+    }
+
     protected override void OnInitialize()
     {
         _spriteBatch = new SpriteBatch(GameBase.Instance!.GraphicsDevice);
