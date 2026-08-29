@@ -45,93 +45,55 @@ public class PointerInstance
         }
     }
 
+    // reused between passes so dispatch allocates nothing after the first frame, and so it runs over a
+    // snapshot: a handler may register or unregister pointables - destroying a button from its own click
+    // handler does exactly that - and must not disturb the pass it was raised from
+    private readonly List<Pointable> _candidates = [];
+    private readonly List<bool> _candidateIsInside = [];
+
     /// <summary>Resolves which pointables this pointer can interact with and raises their enter/exit/select events.</summary>
     public void UpdateInteractions(List<Pointable> pointables)
     {
-        // TODO: this is a bunch of work and allocations for something that should be pretty simple..
-
-        // get a list of all pointables that this pointer is inside
-        List<Pointable> pointablesOver = new();
-        List<Pointable> nonInteractablePointables = new();
+        _candidates.Clear();
+        _candidateIsInside.Clear();
         foreach (Pointable pointable in pointables)
         {
-            if (pointable.IsPointInside(Position))
-            {
-                pointablesOver.Add(pointable);
-            }
-            else
-            {
-                nonInteractablePointables.Add(pointable);
-            }
+            _candidates.Add(pointable);
+            _candidateIsInside.Add(pointable.IsPointInside(Position));
         }
 
-        // now figure out which exclusive pointable we can interact with
-        Pointable? pointableTopExclusive = null;
+        // an exclusive pointable takes the pointer from everything at or below its priority
+        Pointable? topExclusive = null;
         float topExclusivePriority = float.MinValue;
-        foreach (Pointable pointable in pointablesOver)
+        for (int i = 0; i < _candidates.Count; i++)
         {
-            if (pointable.IsExclusive && pointable.Priority > topExclusivePriority)
+            Pointable pointable = _candidates[i];
+            if (_candidateIsInside[i] && pointable.IsExclusive && pointable.Priority > topExclusivePriority)
             {
                 topExclusivePriority = pointable.Priority;
-                pointableTopExclusive = pointable;
+                topExclusive = pointable;
             }
         }
 
-        List<Pointable> interactablePointables = new();
-        if (pointableTopExclusive != null)
+        for (int i = 0; i < _candidates.Count; i++)
         {
-            interactablePointables.Add(pointableTopExclusive);
-        }
+            Pointable pointable = _candidates[i];
 
-        // which non-exclusives can we interact with?
-        foreach (Pointable pointable in pointablesOver)
-        {
-            if (!pointable.IsExclusive && pointable.Priority > topExclusivePriority)
-            {
-                interactablePointables.Add(pointable);
-            }
-            else if (pointable != pointableTopExclusive)
-            {
-                nonInteractablePointables.Add(pointable);
-            }
-        }
+            // the top exclusive, plus any non-exclusive ranked above it, take the pointer; everything else,
+            // whether or not the pointer is over it, is treated as having lost the pointer
+            bool interacting = pointable == topExclusive ||
+                               (_candidateIsInside[i] && !pointable.IsExclusive &&
+                                pointable.Priority > topExclusivePriority);
 
-        Dbg.Assert(pointables.Count == interactablePointables.Count + nonInteractablePointables.Count);
-
-        // update those pointables that we are able to interact with
-        foreach (Pointable pointable in interactablePointables)
-        {
-            if (!pointable.IsPointerInside(this))
-            {
+            if (interacting && !pointable.IsPointerInside(this))
                 pointable.OnPointerEntered(this);
-            }
-
-            // update selecting state
-            if (SelectingState == SelectingState.JustSelected)
-            {
-                pointable.OnPointerSelected(this);
-            }
-            else if (SelectingState == SelectingState.JustUnselected &&
-                     pointable.IsPointerSelecting(this))
-            {
-                pointable.OnPointerUnselected(this);
-            }
-        }
-
-        // update those pointables that we are not able to interact with
-        foreach (Pointable pointable in nonInteractablePointables)
-        {
-            if (pointable.IsPointerInside(this))
-            {
+            else if (!interacting && pointable.IsPointerInside(this))
                 pointable.OnPointerExited(this);
-            }
 
-            // update selecting state
-            if (SelectingState == SelectingState.JustUnselected &&
-                pointable.IsPointerSelecting(this))
-            {
+            if (interacting && SelectingState == SelectingState.JustSelected)
+                pointable.OnPointerSelected(this);
+            else if (SelectingState == SelectingState.JustUnselected && pointable.IsPointerSelecting(this))
                 pointable.OnPointerUnselected(this);
-            }
         }
     }
 }
