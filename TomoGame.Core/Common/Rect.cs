@@ -43,6 +43,16 @@ public struct Rect(Vector2 min, Vector2 size)
     /// </summary>
     public float Height => Size.Y;
 
+    public bool Contains(Vector2 point)
+    {
+        if (point.X < Min.X) return false;
+        if (point.X > Max.X) return false;
+        if (point.Y < Min.Y) return false;
+        if (point.Y > Max.Y) return false;
+        
+        return true;
+    }
+    
     /// <summary>
     /// Gets a rectangle with zero position and size.
     /// </summary>
