@@ -35,7 +35,7 @@ public class ButtonScene : SceneRootNode
         // a label is just a node, so it anchors into the scene like anything else
         _countLabel = new Label(string.Empty, font, 2.5f, this);
         _countLabel.Anchor = new Vector2(0.5f, 0f);
-        _countLabel.SetPositionInParentSpace(new Vector2(0.5f, 0f), new Vector2(0f, 4f));
+        _countLabel.SetPositionInParentSpace(new Vector2(0.5f, 0f), new Vector2(0f, 7f));
 
         RefreshButtons();
     }

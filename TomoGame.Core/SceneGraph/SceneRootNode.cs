@@ -45,6 +45,12 @@ public class SceneRootNode : Node
         _spriteBatch = new SpriteBatch(GameBase.Instance!.GraphicsDevice);
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        _spriteBatch?.Dispose();
+    }
+
     internal void DrawScene()
     {
         GraphicsDevice graphicsDevice = GameBase.Instance!.GraphicsDevice;

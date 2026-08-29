@@ -11,12 +11,14 @@ public static class DebugDraw
     private static void EnsureDrawNode()
     {
         SceneRootNode rootNode = GameBase.Instance!.SceneRoot!;
-        if (_drawNode == null)
+
+        // the node belongs to whichever scene is current, so switching scenes destroys it along with the
+        // outgoing graph; a destroyed node cannot be re-parented, so start a fresh one
+        if (_drawNode == null || _drawNode.IsDestroyed)
         {
             _drawNode = new DebugDrawNode(rootNode);
         }
-
-        if (_drawNode.Parent != rootNode)
+        else if (_drawNode.Parent != rootNode)
         {
             rootNode.AddChild(_drawNode);
         }

@@ -17,6 +17,6 @@ public class UIScene : SceneRootNode
     {
         base.OnDraw(spriteBatch);
         
-        DebugDraw.NodeRect(this, Color.White);
+        DebugDraw.NodeRect(this, Color.White, 0.25f);
     }
 }

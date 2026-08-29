@@ -13,6 +13,6 @@ public class SceneGraphScene : SceneRootNode
     
     protected override void OnUpdate(GameTime gameTime)
     {
-        DebugDraw.NodeRect(this, Color.BlueViolet);
+        DebugDraw.NodeRect(this, Color.BlueViolet, 0.25f);
     }
 }

@@ -26,7 +26,6 @@ public class SamplesGame : GameBase
     {
         base.Initialize();
 
-        SceneRootNode scene = new ButtonScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40);
-        SetScene(scene);
+        SampleBrowser.ShowMenu();
     }
  }
