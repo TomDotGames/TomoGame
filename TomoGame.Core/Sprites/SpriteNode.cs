@@ -43,19 +43,29 @@ public class SpriteNode : Node
     {
         _sprite = ResourceManager.Instance!.GetSprite(spriteName);
         _sourceRect = _sprite.SourceRect;
-        SetIntrinsicSize(_sprite.SourceRect.Width, _sprite.SourceRect.Height);
+
+        // the draw stretches the source onto the node's rect, so a degenerate source has nothing to map from
+        Dbg.Verify(_sourceRect.Width > 0 && _sourceRect.Height > 0, $"sprite '{spriteName}' has an empty source rect");
+
+        SetIntrinsicSize(_sourceRect.Width, _sourceRect.Height);
     }
 
     protected override void OnDraw(SpriteBatch spriteBatch)
     {
         base.OnDraw(spriteBatch);
         SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        // origin must be the anchor expressed in the node's own space: SpriteBatch multiplies it by
-        // scale, so deriving it from IntrinsicSize keeps it consistent with WorldAnchorPosition even
-        // when the intrinsic size has been set to something other than the source rect
-        Vector2 origin = IntrinsicSize * Anchor;
+        Vector2 sourceSize = new(_sourceRect.Width, _sourceRect.Height);
+
+        // stretch the source onto the node's rect, then apply the scale inherited from the graph on top,
+        // so the sprite always fills WorldRect. a node left at its sprite's own size renders 1:1.
+        Vector2 renderScale = (IntrinsicSize / sourceSize) * WorldScale;
+
+        // origin is in source pixels because SpriteBatch multiplies it by renderScale, which is exactly
+        // what maps source space onto the world rect
+        Vector2 origin = sourceSize * Anchor;
+
         spriteBatch.Draw(_sprite.Texture, WorldAnchorPosition, _sourceRect, Color.White, WorldRotation, origin,
-            WorldScale, effects, 0f);
+            renderScale, effects, 0f);
     }
 
     protected override void OnUpdate(GameTime gameTime)
