@@ -50,8 +50,9 @@ public class SpriteNode : Node
     {
         base.OnDraw(spriteBatch);
         SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        spriteBatch.Draw(_sprite.Texture, WorldPosition, _sourceRect, Color.White, 0f, Vector2.Zero, Vector2.One,
-            effects, 0f);
+        Vector2 origin = new(Anchor.X * _sourceRect.Width, Anchor.Y * _sourceRect.Height);
+        spriteBatch.Draw(_sprite.Texture, WorldAnchorPosition, _sourceRect, Color.White, WorldRotation, origin,
+            WorldScale, effects, 0f);
     }
 
     protected override void OnUpdate(GameTime gameTime)
