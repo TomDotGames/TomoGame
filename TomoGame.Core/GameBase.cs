@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using TomoGame.Core.Input;
 using TomoGame.Core.SceneGraph;
 using TomoGame.Core.Resources;
@@ -25,6 +26,11 @@ public class GameBase : Game
     /// <summary>The root node of the active scene.</summary>
     public SceneRootNode? SceneRoot => _rootNode;
 
+    /// <summary>How much the window was scaled up for the display it opened on. 1 on an ordinary display.</summary>
+    public float DisplayScaleFactor { get; private set; } = 1f;
+
+    /// <summary>Creates the game with a window of the given size. The size is in logical pixels: on a high
+    /// density display the window is scaled up to match, so it comes out the physical size you asked for.</summary>
     protected GameBase(int width, int height) : base()
     {
         Dbg.Assert(Instance == null);
@@ -41,12 +47,29 @@ public class GameBase : Game
         _resourceManager = new ResourceManager(Services);
         _inputManager = new InputManager(this);
         
-        _graphicsDeviceManager.PreferredBackBufferWidth = _windowWidth;
-        _graphicsDeviceManager.PreferredBackBufferHeight = _windowHeight;
+        DisplayScaleFactor = ResolveWindowScale();
+        _graphicsDeviceManager.PreferredBackBufferWidth = (int)MathF.Round(_windowWidth * DisplayScaleFactor);
+        _graphicsDeviceManager.PreferredBackBufferHeight = (int)MathF.Round(_windowHeight * DisplayScaleFactor);
         _graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
         _graphicsDeviceManager.ApplyChanges();
 
+        Log.Info($"Window {_windowWidth}x{_windowHeight} at display scale {DisplayScaleFactor:0.##} " +
+                 $"-> {_graphicsDeviceManager.PreferredBackBufferWidth}x{_graphicsDeviceManager.PreferredBackBufferHeight}");
+
         base.Initialize();
+    }
+
+    /// <summary>The display's scale, held back so the scaled window still fits on the display. Scaling a
+    /// window off the edge of the screen is worse than not scaling it at all.</summary>
+    private float ResolveWindowScale()
+    {
+        float scale = DisplayScale.Get();
+
+        DisplayMode display = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+        float widthLimit = (float)display.Width / _windowWidth;
+        float heightLimit = (float)display.Height / _windowHeight;
+
+        return MathF.Max(1f, MathF.Min(scale, MathF.Min(widthLimit, heightLimit)));
     }
 
     protected override void Update(GameTime gameTime)
