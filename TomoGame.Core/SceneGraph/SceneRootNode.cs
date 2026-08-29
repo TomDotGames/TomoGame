@@ -18,6 +18,9 @@ public class SceneRootNode : Node
     private readonly float _sceneDrawScale;
     private SpriteBatch _spriteBatch = null!;
 
+    // reused each frame so building the draw order allocates nothing
+    private readonly List<DrawEntry> _drawList = [];
+
     public SceneRootNode(GraphicsDeviceManager graphics, SceneScaleMode scaleMode, int size)
         : base(Vector2.Zero, Vector2.Zero)
     {
@@ -56,6 +59,10 @@ public class SceneRootNode : Node
         GraphicsDevice graphicsDevice = GameBase.Instance!.GraphicsDevice;
         Matrix baseTransform = Matrix.CreateScale(_sceneDrawScale);
 
+        _drawList.Clear();
+        CollectDrawList(_drawList);
+        _drawList.Sort(DrawEntryComparer.Instance);
+
         graphicsDevice.Clear(Color.ForestGreen);
         // Deferred draws in submission order, which is the scene graph's own order: parents before children,
         // siblings in the order they were added. FrontToBack sorted on a layerDepth every node left at 0,
@@ -69,7 +76,12 @@ public class SceneRootNode : Node
             null,
             baseTransform);
 
-        Draw(_spriteBatch);
+        foreach (DrawEntry entry in _drawList)
+        {
+            // a node can be destroyed by something drawn before it
+            if (!entry.Node.IsDestroyed)
+                entry.Node.DrawSelf(_spriteBatch);
+        }
 
         _spriteBatch.End();
     }

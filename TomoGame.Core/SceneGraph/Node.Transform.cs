@@ -34,6 +34,28 @@ public partial class Node
     private float _worldRotation;
     private float _localRotation;
 
+    /// <summary>Where this node draws relative to the rest of the graph. Higher draws later, so on top.
+    /// It accumulates down the tree like the rest of the transform, so raising a node's order lifts its whole
+    /// subtree, and nodes sharing an order keep the graph's own order: parents before children, siblings as
+    /// they were added.</summary>
+    public float ZOrder
+    {
+        get => _zOrder;
+        set
+        {
+            if (Math.Abs(_zOrder - value) < float.Epsilon)
+                return;
+
+            _zOrder = value;
+            ComputeWorldTransform();
+        }
+    }
+    private float _zOrder;
+
+    /// <summary>This node's draw order including everything inherited from its ancestors.</summary>
+    public float WorldZOrder => _worldZOrder;
+    private float _worldZOrder;
+
     /// <summary>The pivot point of this node within its own local rect, in UV space (0,0 is top-left, 1,1 is bottom-right). Defaults to bottom-left.</summary>
     public Vector2 Anchor
     {
@@ -205,6 +227,7 @@ public partial class Node
         {
             _worldScale = _localScale * Parent._worldScale;
             _worldRotation = _localRotation + Parent._worldRotation;
+            _worldZOrder = _zOrder + Parent._worldZOrder;
 
             // place our pivot relative to the parent's pivot, then carry it through the parent's scale and rotation
             Vector2 pivotInParent = _localRect.Min + anchorLocal;
@@ -216,6 +239,7 @@ public partial class Node
         {
             _worldScale = _localScale;
             _worldRotation = _localRotation;
+            _worldZOrder = _zOrder;
             _worldAnchorPosition = _localRect.Min + anchorLocal;
         }
 

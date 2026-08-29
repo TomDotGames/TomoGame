@@ -12,6 +12,7 @@ namespace TomoGame.Samples;
 public static class SampleBrowser
 {
     private static readonly Vector2 BackButtonSize = new(11f, 4f);
+    private const float BackButtonZOrder = 2000f;
 
     /// <summary>Shows the sample menu.</summary>
     public static void ShowMenu()
@@ -30,6 +31,10 @@ public static class SampleBrowser
         BitmapFont font = ResourceManager.Instance!.GetFont("Fonts/Tiny");
         Button back = MakeButton(scene, font, "MENU", BackButtonSize, 2f);
         back.Anchor = Vector2.Zero; // pin its top-left corner, so the inset reads as a true margin
+
+        // above even the debug overlay: this is the browser's own chrome, and a sample that covers it leaves
+        // no way back to the menu
+        back.ZOrder = BackButtonZOrder;
         back.SetPositionInParentSpace(new Vector2(0f, 0f), new Vector2(1f, 1f));
         back.Clicked += _ => ShowMenu();
 

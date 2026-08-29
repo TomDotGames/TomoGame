@@ -63,19 +63,32 @@ public partial class Node
         ProcessPendingRemovals();
     }
 
-    internal void Draw(SpriteBatch spriteBatch)
+    /// <summary>Walks the subtree in graph order, appending everything that should draw. Order is decided by
+    /// sorting the result rather than by the walk itself, so a node's <see cref="ZOrder"/> can lift it above
+    /// nodes that come later in the tree.</summary>
+    internal void CollectDrawList(List<DrawEntry> drawList)
     {
         if (!Visible) return;
 
-        OnDraw(spriteBatch);
+        // the index is the tie-break that keeps equal orders in graph order, and makes the sort total so it
+        // cannot fall back on an arbitrary ordering the way an unstable sort on equal keys would
+        drawList.Add(new DrawEntry(this, WorldZOrder, drawList.Count));
+
         for (int i = 0; i < _children.Count; i++)
         {
             Node child = _children[i];
             if (!child._destroyed)
-                child.Draw(spriteBatch);
+                child.CollectDrawList(drawList);
         }
 
         ProcessPendingRemovals();
+    }
+
+    /// <summary>Draws just this node, without its children. The scene root drives this once the draw list is
+    /// in order.</summary>
+    internal void DrawSelf(SpriteBatch spriteBatch)
+    {
+        OnDraw(spriteBatch);
     }
 
     /// <summary>Called once when the node is initialized. Override to set up node state.</summary>
@@ -108,6 +121,11 @@ public partial class Node
         node.Parent?.RemoveChild(node);
         _children.Add(node);
         node.Parent = this;
+
+        // the node's world transform and draw order are both relative to its parent, so they are stale the
+        // moment it moves
+        node.ComputeWorldTransform();
+
         if (_initialized && !node._initialized)
             node.Initialize();
     }
