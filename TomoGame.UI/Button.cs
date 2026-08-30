@@ -71,14 +71,14 @@ public class Button : Node
         if (!Dbg.Verify(spriteToDraw))
             return;
 
-        // stretch the sprite onto the button's rect, so sizing the button actually sizes what is drawn. A
-        // button left at its sprite's own size renders 1:1.
-        Rect worldRect = WorldRect;
+        // stretch the sprite onto the button's rect, so sizing the button actually sizes what is drawn, and
+        // pivot on the button's own origin. A button left at its sprite's own size renders 1:1.
         Vector2 sourceSize = spriteToDraw.SourceRect.Size.ToVector2();
-        Vector2 renderScale = worldRect.Size / sourceSize;
+        Vector2 renderScale = WorldSize / sourceSize;
+        Vector2 origin = OriginUV * sourceSize;
 
-        spriteBatch.Draw(spriteToDraw.Texture, worldRect.Min, spriteToDraw.SourceRect, Color.White, 0f,
-            Vector2.Zero, renderScale, SpriteEffects.None, 0f);
+        spriteBatch.Draw(spriteToDraw.Texture, WorldPosition, spriteToDraw.SourceRect, Color.White,
+            WorldRotation, origin, renderScale, SpriteEffects.None, 0f);
     }
 
     private void OnClicked(PointerInstance pointerInstance)

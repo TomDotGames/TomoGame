@@ -51,14 +51,15 @@ public class SpriteNode : Node
         base.OnDraw(spriteBatch);
         SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-        // stretch the source onto the node's rect, so sizing or scaling the node sizes what is drawn. A node
-        // left at its sprite's own size renders 1:1.
-        Rect worldRect = WorldRect;
+        // stretch the source onto the node's rect, so sizing or scaling the node sizes what is drawn, and
+        // pivot on the node's own origin so it turns in place. A node left at its sprite's own size and
+        // unrotated renders exactly where WorldRect.Min says.
         Vector2 sourceSize = new(_sourceRect.Width, _sourceRect.Height);
-        Vector2 renderScale = worldRect.Size / sourceSize;
+        Vector2 renderScale = WorldSize / sourceSize;
+        Vector2 origin = OriginUV * sourceSize;
 
-        spriteBatch.Draw(_sprite.Texture, worldRect.Min, _sourceRect, Color.White, 0f, Vector2.Zero, renderScale,
-            effects, 0f);
+        spriteBatch.Draw(_sprite.Texture, WorldPosition, _sourceRect, Color.White, WorldRotation, origin,
+            renderScale, effects, 0f);
     }
 
     protected override void OnUpdate(GameTime gameTime)
