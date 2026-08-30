@@ -3,7 +3,10 @@ using System.Xml.Linq;
 
 namespace TomoGame.Core.SceneGraph;
 
-[AttributeUsage(AttributeTargets.Class)]
+// Inherited is deliberately off. It defaults to on, which would give every subclass of a layout node its
+// base's name - every Node subclass would answer to "Transform" - and the registry keeps the last type it
+// sees under a name, so the element would resolve to whichever subclass happened to be scanned last.
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class LayoutNodeAttribute : Attribute
 {
     public string Name { get; }
