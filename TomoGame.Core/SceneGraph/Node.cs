@@ -17,6 +17,11 @@ public partial class Node
 
     private bool _initialized;
 
+    /// <summary>Where this node draws relative to the rest of the graph. Higher draws later, so on top. It
+    /// accumulates down the tree, so raising a node's order lifts its whole subtree, and nodes sharing an
+    /// order keep the graph's own order: parents before children, siblings as they were added.</summary>
+    public float ZOrder { get; set; }
+
     public Node(Node? parent = null)
     {
         parent?.AddChild(this);
@@ -41,13 +46,28 @@ public partial class Node
         }
     }
 
-    internal void Draw(SpriteBatch spriteBatch)
+    /// <summary>Walks the subtree in graph order, appending everything that should draw. Order is decided by
+    /// sorting the result rather than by the walk itself, so a node's <see cref="ZOrder"/> can lift it above
+    /// nodes that come later in the tree.</summary>
+    internal void CollectDrawList(List<DrawEntry> drawList, float inheritedZOrder)
     {
-        OnDraw(spriteBatch);
+        float zOrder = inheritedZOrder + ZOrder;
+
+        // the index is the tie-break that keeps equal orders in graph order, and makes the sort total so it
+        // cannot fall back on the arbitrary ordering an unstable sort gives equal keys
+        drawList.Add(new DrawEntry(this, zOrder, drawList.Count));
+
         foreach (Node child in _children)
         {
-            child.Draw(spriteBatch);
+            child.CollectDrawList(drawList, zOrder);
         }
+    }
+
+    /// <summary>Draws just this node, without its children. The scene root drives this once the draw list is
+    /// in order.</summary>
+    internal void DrawSelf(SpriteBatch spriteBatch)
+    {
+        OnDraw(spriteBatch);
     }
 
     /// <summary>Called once when the node is initialized. Override to set up node state.</summary>

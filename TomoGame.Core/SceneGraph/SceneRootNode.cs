@@ -19,6 +19,9 @@ public class SceneRootNode : Node
     private readonly float _sceneDrawScale;
     private SpriteBatch _spriteBatch = null!;
 
+    // reused each frame so building the draw order allocates nothing
+    private readonly List<DrawEntry> _drawList = [];
+
     public SceneRootNode(GraphicsDeviceManager graphics, SceneScaleMode scaleMode, int size)
         : base(null)
     {
@@ -44,9 +47,16 @@ public class SceneRootNode : Node
         GraphicsDevice graphicsDevice = GameBase.Instance!.GraphicsDevice;
         Matrix baseTransform = Matrix.CreateScale(_sceneDrawScale);
 
+        _drawList.Clear();
+        CollectDrawList(_drawList, 0f);
+        _drawList.Sort(DrawEntryComparer.Instance);
+
         graphicsDevice.Clear(Color.ForestGreen);
+
+        // Deferred draws in submission order, which is now the order we sorted into. FrontToBack sorted on a
+        // layerDepth every node left at 0, so equal keys came out in an arbitrary order.
         _spriteBatch.Begin(
-            SpriteSortMode.FrontToBack,
+            SpriteSortMode.Deferred,
             BlendState.AlphaBlend,
             SamplerState.PointClamp,
             DepthStencilState.Default,
@@ -54,7 +64,10 @@ public class SceneRootNode : Node
             null,
             baseTransform);
 
-        Draw(_spriteBatch);
+        foreach (DrawEntry entry in _drawList)
+        {
+            entry.Node.DrawSelf(_spriteBatch);
+        }
 
         _spriteBatch.End();
     }

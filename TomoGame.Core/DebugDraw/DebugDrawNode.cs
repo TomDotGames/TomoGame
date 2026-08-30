@@ -4,8 +4,16 @@ using TomoGame.Core.SceneGraph;
 
 namespace TomoGame.Core;
 
-internal class DebugDrawNode(Node? parent = null) : Node(parent)
+internal class DebugDrawNode : Node
 {
+    /// <summary>Debug visuals are meant to be seen, so they sit above anything a scene draws normally.</summary>
+    public const float DebugZOrder = 1000f;
+
+    public DebugDrawNode(Node? parent = null) : base(parent)
+    {
+        ZOrder = DebugZOrder;
+    }
+
     private readonly struct LineDrawRequest(Line line, Color color, float thickness)
     {
         public Line DrawLine { get; } = line;
