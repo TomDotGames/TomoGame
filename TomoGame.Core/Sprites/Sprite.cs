@@ -28,6 +28,13 @@ public class Sprite
         /// <summary>Duration of each frame in seconds. Defaults to 2fps.</summary>
         public float FrameTime = 1f / 2f;
 
+        /// <summary>A struct's field initialisers only run for a constructor that is declared, so without this
+        /// `new Animation()` would zero FrameTime rather than defaulting it, and nothing would ever advance a
+        /// frame.</summary>
+        public Animation()
+        {
+        }
+
         /// <summary>Creates an animation with the given first frame and frame count.</summary>
         public Animation(Rectangle firstFrameRect, int frameCount)
         {

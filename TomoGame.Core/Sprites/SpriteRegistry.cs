@@ -57,9 +57,8 @@ public class SpriteRegistry
         {
             foreach (KeyValuePair<string, SpriteData.AnimationData> animData in spriteData.Animations)
             {
-                Sprite.Animation animation = new Sprite.Animation();
-                animation.FirstFrameRect = sourceRect; // todo: offsets
-                animation.FrameCount = animData.Value.Frames;
+                // the constructor rather than field assignment, so the frame time initialiser runs
+                Sprite.Animation animation = new Sprite.Animation(sourceRect, animData.Value.Frames); // todo: offsets
                 Dbg.Assert(!animations.ContainsKey(animData.Key));
                 animations.Add(animData.Key, animation);
             }
