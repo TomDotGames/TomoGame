@@ -27,28 +27,28 @@ public class Button : Node
         _pointable.Clicked += OnClicked;
     }
 
+    /// <summary>Points the button at a sprite sheet, taking the sprite for each state from it and sizing the
+    /// button to the up sprite. Only up is required; a state without a sprite falls back to it.</summary>
+    public void SetSprites(string spriteSheetName)
+    {
+        // these are hardcoded for now but they don't have to be
+        _upSprite = ResourceManager.Instance!.GetSprite(spriteSheetName + ".up");
+        _hoveredSprite = ResourceManager.Instance!.TryGetSprite(spriteSheetName + ".hovered");
+        _downSprite = ResourceManager.Instance!.TryGetSprite(spriteSheetName + ".down");
+        _disabledSprite = ResourceManager.Instance!.TryGetSprite(spriteSheetName + ".disabled");
+
+        if (Dbg.Verify(_upSprite))
+        {
+            IntrinsicSize = _upSprite.SourceRect.Size.ToVector2();
+        }
+    }
+
     public override void ApplyLayoutAttributes(XElement element)
     {
         XAttribute? src = element.Attribute("src");
         if (src != null)
         {
-            // these are hardcoded for now but they don't have to be
-            string upSpriteName = src.Value + ".up";
-            _upSprite = ResourceManager.Instance!.GetSprite(upSpriteName);
-
-            string hoveredSpriteName = src.Value + ".hovered";
-            _hoveredSprite = ResourceManager.Instance!.TryGetSprite(hoveredSpriteName);
-
-            string downSpriteName = src.Value + ".down";
-            _downSprite = ResourceManager.Instance!.TryGetSprite(downSpriteName);
-
-            string disabledSpriteName = src.Value + ".disabled";
-            _disabledSprite = ResourceManager.Instance!.TryGetSprite(disabledSpriteName);
-        }
-
-        if (Dbg.Verify(_upSprite))
-        {
-            IntrinsicSize = _upSprite.SourceRect.Size.ToVector2();
+            SetSprites(src.Value);
         }
 
         base.ApplyLayoutAttributes(element);
@@ -70,8 +70,15 @@ public class Button : Node
 
         if (!Dbg.Verify(spriteToDraw))
             return;
-        
-        spriteBatch.Draw(spriteToDraw.Texture, WorldRect.Min, spriteToDraw.SourceRect, Color.White);
+
+        // stretch the sprite onto the button's rect, so sizing the button actually sizes what is drawn. A
+        // button left at its sprite's own size renders 1:1.
+        Rect worldRect = WorldRect;
+        Vector2 sourceSize = spriteToDraw.SourceRect.Size.ToVector2();
+        Vector2 renderScale = worldRect.Size / sourceSize;
+
+        spriteBatch.Draw(spriteToDraw.Texture, worldRect.Min, spriteToDraw.SourceRect, Color.White, 0f,
+            Vector2.Zero, renderScale, SpriteEffects.None, 0f);
     }
 
     private void OnClicked(PointerInstance pointerInstance)

@@ -50,7 +50,14 @@ public class SpriteNode : Node
     {
         base.OnDraw(spriteBatch);
         SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        spriteBatch.Draw(_sprite.Texture, WorldRect.Min, _sourceRect, Color.White, 0f, Vector2.Zero, Vector2.One,
+
+        // stretch the source onto the node's rect, so sizing or scaling the node sizes what is drawn. A node
+        // left at its sprite's own size renders 1:1.
+        Rect worldRect = WorldRect;
+        Vector2 sourceSize = new(_sourceRect.Width, _sourceRect.Height);
+        Vector2 renderScale = worldRect.Size / sourceSize;
+
+        spriteBatch.Draw(_sprite.Texture, worldRect.Min, _sourceRect, Color.White, 0f, Vector2.Zero, renderScale,
             effects, 0f);
     }
 
