@@ -20,7 +20,10 @@ public partial class Node
             OriginUV = AnchorPositionFromString(tokens[0]);
             
             Vector2 parentAnchorUV = AnchorPositionFromString(tokens[1]);
-            Vector2 parentAnchor = Parent?.UVToLocalSpace(parentAnchorUV) ?? Vector2.Zero;
+            // measured from the parent's origin, because that is where our LocalPosition starts from. Using
+            // the parent's top left instead only agrees when the parent's own origin is its top left, which
+            // is why this only shows up once something is nested under a node anchored anywhere else.
+            Vector2 parentAnchor = Parent?.UVToChildSpace(parentAnchorUV) ?? Vector2.Zero;
             
             Vector2 offset = new Vector2(float.Parse(tokens[2]), float.Parse(tokens[3]));
             LocalPosition = parentAnchor + offset;

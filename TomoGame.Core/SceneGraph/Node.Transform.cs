@@ -96,6 +96,14 @@ public partial class Node
         return new Vector2(uv.X * LocalSize.X,  uv.Y * LocalSize.Y);
     }
 
+    /// <summary>A UV point on this node's rect, measured from this node's own origin rather than its top left
+    /// corner. That is the space a child's <see cref="LocalPosition"/> lives in, so this is what to anchor a
+    /// child against.</summary>
+    public Vector2 UVToChildSpace(Vector2 uv)
+    {
+        return UVToLocalSpace(uv - OriginUV);
+    }
+
     private void MarkWorldTransformDirty()
     {
         _worldTransformIsDirty = true;
