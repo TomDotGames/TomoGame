@@ -30,7 +30,6 @@ public class SamplesGame : GameBase
         AddScene(SampleBrowser.Menu, new MenuScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
         AddSample(SampleBrowser.SceneGraphScene, new SceneGraphScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
         AddSample(SampleBrowser.SpriteScene, new SpriteScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
-        AddSample(SampleBrowser.UiScene, new UIScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
 
         SetScene(SampleBrowser.Menu);
     }

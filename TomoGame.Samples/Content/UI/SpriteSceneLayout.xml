@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Layout>
+    <Sprite src="Sprites/Samples.House"  pos="tl tl 15 20" />
+    <Sprite src="Sprites/Samples.Car"    pos="tl tl 25 35" />
+
+    <Sprite src="Sprites/Samples.Flower" pos="tl tl 5 10"  anim="wave" animmode="pingpong" />
+    <Sprite src="Sprites/Samples.Flower" pos="tl tl 28 7"  anim="wave" animmode="pingpong" />
+
+    <Sprite name="dog" src="Sprites/Samples.Dog" pos="tl tl 10 50" anim="wag" animmode="loop" />
+</Layout>

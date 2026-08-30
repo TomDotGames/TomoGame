@@ -15,7 +15,6 @@ public class MenuScene : SceneRootNode
 
         Wire(layout, "scenegraph_button", SampleBrowser.SceneGraphScene);
         Wire(layout, "sprites_button", SampleBrowser.SpriteScene);
-        Wire(layout, "ui_button", SampleBrowser.UiScene);
     }
 
     private static void Wire(LayoutNode layout, string buttonName, string sceneName)

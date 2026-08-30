@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Layout>
+    <!-- an empty node with no size of its own, just a point to hang the rest off. Turning it sweeps
+         everything below it around the middle of the scene. -->
+    <Transform name="system" pos="cc cc 0 0">
+
+        <!-- sits on the system's own pivot, so the system's turn spins it on the spot -->
+        <Sprite src="Sprites/Samples.House" pos="cc cc 0 0" scale="0.7" />
+
+        <!-- one orbit radius out, and turning at a rate of its own so its child orbits it in turn -->
+        <Transform name="planet" pos="cc cc 11 0">
+            <Sprite src="Sprites/Samples.Car" pos="cc cc 0 0" />
+            <Sprite src="Sprites/Samples.Dog" pos="cc cc 4 0" anim="wag" />
+        </Transform>
+
+    </Transform>
+</Layout>

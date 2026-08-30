@@ -5,46 +5,40 @@ using TomoGame.Core.Sprites;
 
 namespace TomoGame.Samples;
 
+/// <summary>Sprites, including animated ones. The scene is a layout file; the only thing here is the dog's
+/// patrol, which is behaviour and so cannot be data.</summary>
 public class SpriteScene : SceneRootNode
 {
-    private SpriteNode _dog;
+    private const float MoveSpeed = 10f;
+    private const float LeftLimit = 5f;
+    private const float RightLimit = 30f;
+
+    private readonly SpriteNode? _dog;
     private bool _dogGoingRight = true;
-    
-    public SpriteScene(GraphicsDeviceManager graphics, SceneScaleMode scaleMode, int size) : base(graphics, scaleMode, size)
+
+    public SpriteScene(GraphicsDeviceManager graphics, SceneScaleMode scaleMode, int size)
+        : base(graphics, scaleMode, size)
     {
-        SpriteNode house = new SpriteNode("Sprites/Samples.House", new Vector2(15, 20), this);
-        SpriteNode car = new SpriteNode("Sprites/Samples.Car", new Vector2(25, 35), this);
-        SpriteNode flower = new SpriteNode("Sprites/Samples.Flower", new Vector2(5, 10), this);
-        flower.PlayAnimation("wave", AnimationPlayer.AnimationMode.PingPong);
-        SpriteNode flower2 = new SpriteNode("Sprites/Samples.Flower", new Vector2(28, 7), this);
-        flower2.PlayAnimation("wave", AnimationPlayer.AnimationMode.PingPong);
-        _dog = new SpriteNode("Sprites/Samples.Dog", new Vector2(10, 50), this);
-        _dog.PlayAnimation("wag", AnimationPlayer.AnimationMode.Loop);
+        LayoutNode layout = new LayoutNode("UI/SpriteSceneLayout.xml", this);
+
+        _dog = layout.FindNode("dog") as SpriteNode;
+        Dbg.Verify(_dog, "sprite layout has no node named 'dog'");
     }
-    
+
     protected override void OnUpdate(GameTime gameTime)
     {
-        // move the dog
-        float moveSpeed = 10f;
-        float moveAmount = (float)gameTime.ElapsedGameTime.TotalSeconds * moveSpeed;
-        if (_dogGoingRight)
-        {
-            _dog.FlipX = false;
-            _dog.TranslateInLocalSpace(new Vector2(moveAmount, 0));
-            if (_dog.WorldPosition.X > 30)
-            {
-                _dogGoingRight = false;
-            }
-        }
-        else
-        {
-            _dog.FlipX = true;
-            _dog.TranslateInLocalSpace(new Vector2(-moveAmount, 0));
-            if (_dog.WorldPosition.X < 5)
-            {
-                _dogGoingRight = true;
-            } 
-        }
+        base.OnUpdate(gameTime);
+
+        if (_dog == null)
+            return;
+
+        float moveAmount = Time.TickSeconds * MoveSpeed;
+        _dog.FlipX = !_dogGoingRight;
+        _dog.TranslateInLocalSpace(new Vector2(_dogGoingRight ? moveAmount : -moveAmount, 0f));
+
+        if (_dogGoingRight && _dog.WorldPosition.X > RightLimit)
+            _dogGoingRight = false;
+        else if (!_dogGoingRight && _dog.WorldPosition.X < LeftLimit)
+            _dogGoingRight = true;
     }
 }
-

@@ -12,7 +12,6 @@ public static class SampleBrowser
     public const string Menu = "menu";
     public const string SceneGraphScene = "scenegraph";
     public const string SpriteScene = "sprites";
-    public const string UiScene = "ui";
 
     private const float BackButtonZOrder = 2000f;
     private static readonly Vector2 BackButtonSize = new(14f, 5f);

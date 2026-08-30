@@ -16,10 +16,13 @@
         <None Update="Content\Sprites\Samples.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="Content\UI\UISceneLayout.xml">
+        <None Update="Content\UI\MenuLayout.xml">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="Content\UI\MenuLayout.xml">
+        <None Update="Content\UI\SpriteSceneLayout.xml">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Content\UI\SceneGraphSceneLayout.xml">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="Content\Sprites\Button.json">
