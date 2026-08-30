@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Layout>
+    <Label text="TOMOGAME SAMPLES" height="3" pos="tc tc 0 6" />
+
+    <Button name="scenegraph_button" src="Sprites/Button" pos="cc cc 0 -12">
+        <Label text="SCENE GRAPH" height="3" pos="cc cc 0 0" />
+    </Button>
+    <Button name="sprites_button" src="Sprites/Button" pos="cc cc 0 0">
+        <Label text="SPRITES" height="3" pos="cc cc 0 0" />
+    </Button>
+    <Button name="ui_button" src="Sprites/Button" pos="cc cc 0 12">
+        <Label text="XML LAYOUT" height="3" pos="cc cc 0 0" />
+    </Button>
+</Layout>

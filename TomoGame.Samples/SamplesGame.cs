@@ -27,8 +27,18 @@ public class SamplesGame : GameBase
     {
         base.Initialize();
 
-        AddScene("ui", new UIScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
-        AddScene("sprites", new SpriteScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
-        SetScene("ui");
+        AddScene(SampleBrowser.Menu, new MenuScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
+        AddSample(SampleBrowser.SceneGraphScene, new SceneGraphScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
+        AddSample(SampleBrowser.SpriteScene, new SpriteScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
+        AddSample(SampleBrowser.UiScene, new UIScene(Graphics, SceneRootNode.SceneScaleMode.FixedWidth, 40));
+
+        SetScene(SampleBrowser.Menu);
+    }
+
+    /// <summary>Registers a sample and gives it a way back to the menu.</summary>
+    private void AddSample(string name, SceneRootNode scene)
+    {
+        SampleBrowser.AddBackButton(scene);
+        AddScene(name, scene);
     }
  }
