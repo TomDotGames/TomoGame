@@ -18,6 +18,9 @@ public class SamplesGame : GameBase
     {
         base.LoadContent();
         ResourceManager.Instance.LoadResourcesInDirectory<Texture2D>("Sprites");
+
+        // 16 columns of 8x11 glyphs, running from space through to '~'
+        ResourceManager.Instance.LoadFont("Fonts/Tiny", 8, 11, ' ', 16);
     }
 
     protected override void Initialize()

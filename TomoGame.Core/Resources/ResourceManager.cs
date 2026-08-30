@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using TomoGame.Core.Sprites;
+using TomoGame.Core.Text;
 
 namespace TomoGame.Core.Resources;
 
@@ -13,6 +14,7 @@ public class ResourceManager
     private ContentManager _contentManager;
     private HashSet<string> _loadedResources = [];
     private SpriteRegistry _spriteRegistry;
+    private Dictionary<string, BitmapFont> _fonts = [];
 
     /// <summary>Creates a new ResourceManager. Only one instance may exist at a time.</summary>
     internal ResourceManager(IServiceProvider serviceProvider)
@@ -62,6 +64,32 @@ public class ResourceManager
     {
         Dbg.Assert(_loadedResources.Contains(name));
         return _contentManager.Load<T>(name);
+    }
+
+    /// <summary>Loads a bitmap font sheet and registers it under its asset name. The grid metrics are passed
+    /// in rather than described alongside the texture; a descriptor file would be the next step once there is
+    /// more than a font or two.</summary>
+    public BitmapFont LoadFont(string name, int cellWidth, int cellHeight, char firstChar, int columns)
+    {
+        Texture2D texture = _contentManager.Load<Texture2D>(name);
+        BitmapFont font = new BitmapFont(texture, cellWidth, cellHeight, firstChar, columns);
+
+        Dbg.Verify(!_fonts.ContainsKey(name), $"font '{name}' is already loaded");
+        _fonts[name] = font;
+        DefaultFont ??= font;
+
+        Log.Info($"Loaded font {name}");
+        return font;
+    }
+
+    /// <summary>The first font that was loaded, used by anything that does not name one.</summary>
+    public BitmapFont? DefaultFont { get; private set; }
+
+    /// <summary>Returns a previously loaded font by name. Asserts if it was not loaded.</summary>
+    public BitmapFont GetFont(string name)
+    {
+        Dbg.Assert(_fonts.ContainsKey(name));
+        return _fonts[name];
     }
 
     /// <summary>Returns a sprite by name from the sprite registry. Asserts if not found.</summary>
