@@ -37,6 +37,14 @@ public class SpriteNode : Node
         }
 
         base.ApplyLayoutAttributes(element);
+
+        // after the base, so a sprite's own size is in place before anything anchors against it
+        XAttribute? anim = element.Attribute("anim");
+        if (anim != null)
+        {
+            XAttribute? mode = element.Attribute("animmode");
+            PlayAnimation(anim.Value, ParseAnimationMode(mode?.Value));
+        }
     }
 
     private void LoadSprite(string spriteName)
@@ -44,6 +52,17 @@ public class SpriteNode : Node
         _sprite = ResourceManager.Instance!.GetSprite(spriteName);
         _sourceRect = _sprite.SourceRect;
         IntrinsicSize = new Vector2(_sprite.SourceRect.Width, _sprite.SourceRect.Height);
+    }
+
+    /// <summary>Parses a layout's animmode, defaulting to looping.</summary>
+    private static AnimationPlayer.AnimationMode ParseAnimationMode(string? mode)
+    {
+        return mode?.ToLowerInvariant() switch
+        {
+            "pingpong" => AnimationPlayer.AnimationMode.PingPong,
+            "oneshot" => AnimationPlayer.AnimationMode.OneShot,
+            _ => AnimationPlayer.AnimationMode.Loop
+        };
     }
 
     protected override void OnDraw(SpriteBatch spriteBatch)
