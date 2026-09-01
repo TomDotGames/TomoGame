@@ -29,20 +29,30 @@ public partial class Node
 
     internal void Initialize()
     {
+        // a scene can be shown more than once, and re-running OnInitialize would allocate a second set of
+        // everything the first run made. AddChild already relies on this flag covering the whole subtree.
+        if (_initialized)
+            return;
+
         _initialized = true;
         OnInitialize();
-        foreach (Node child in _children)
+
+        // by index, for the reason given on Update
+        for (int i = 0; i < _children.Count; i++)
         {
-            child.Initialize();
+            _children[i].Initialize();
         }
     }
 
     internal void Update(GameTime gameTime)
     {
         OnUpdate(gameTime);
-        foreach (Node child in _children)
+
+        // by index, not foreach: OnUpdate can add to the tree - DebugDraw parents its overlay onto the scene
+        // root on first use - and appending mid-foreach throws. Anything appended is picked up by this walk.
+        for (int i = 0; i < _children.Count; i++)
         {
-            child.Update(gameTime);
+            _children[i].Update(gameTime);
         }
     }
 
