@@ -68,6 +68,11 @@ public class SpriteNode : Node
     protected override void OnDraw(SpriteBatch spriteBatch)
     {
         base.OnDraw(spriteBatch);
+
+        // having no sprite is legitimate: the parameterless ctor and a <Sprite> with no src both leave it unset
+        if (_sprite == null)
+            return;
+
         SpriteEffects effects = FlipX ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
         // stretch the source onto the node's rect, so sizing or scaling the node sizes what is drawn, and
@@ -84,6 +89,9 @@ public class SpriteNode : Node
     protected override void OnUpdate(GameTime gameTime)
     {
         base.OnUpdate(gameTime);
+        if (_sprite == null)
+            return;
+
         _animationPlayer.Update();
 
         if (_animationPlayer.Animation != null)
@@ -100,6 +108,9 @@ public class SpriteNode : Node
     /// <summary>Starts playing the named animation. Asserts if the animation does not exist on this sprite.</summary>
     public void PlayAnimation(string animationName, AnimationPlayer.AnimationMode mode)
     {
+        if (!Dbg.Verify(_sprite, $"cannot play animation '{animationName}': this sprite node has no sprite"))
+            return;
+
         Sprite.Animation? animation = _sprite.GetAnimation(animationName);
         if (Dbg.Verify(animation != null))
         {

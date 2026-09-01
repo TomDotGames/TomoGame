@@ -77,7 +77,10 @@ public partial class Node
     public Vector2 WorldPosition
     {
         get => WorldTransform.Position;
-        set => _worldTransform.Position = value;
+
+        // into local space, where position is actually kept. Assigning the cache instead would be undone by
+        // the next recompute, and would leave the children behind.
+        set => LocalPosition = Parent != null ? Parent.WorldTransform.Inverted().TransformPoint(value) : value;
     }
 
     public Vector2 OriginUV { get; set; }
