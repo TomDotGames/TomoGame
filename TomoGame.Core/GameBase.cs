@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TomoGame.Core.Coroutines;
 using TomoGame.Core.Input;
 using TomoGame.Core.SceneGraph;
 using TomoGame.Core.Resources;
@@ -12,6 +13,7 @@ public class GameBase : Game
     private GraphicsDeviceManager _graphicsDeviceManager;
     private ResourceManager? _resourceManager;
     private InputManager? _inputManager;
+    private CoroutineManager? _coroutineManager;
     private int _windowWidth;
     private int _windowHeight;
 
@@ -45,7 +47,8 @@ public class GameBase : Game
 
         _resourceManager = new ResourceManager(Services);
         _inputManager = new InputManager(this);
-        
+        _coroutineManager = new CoroutineManager(this);
+
         DisplayScaleFactor = ResolveWindowScale();
         _graphicsDeviceManager.PreferredBackBufferWidth = (int)MathF.Round(_windowWidth * DisplayScaleFactor);
         _graphicsDeviceManager.PreferredBackBufferHeight = (int)MathF.Round(_windowHeight * DisplayScaleFactor);

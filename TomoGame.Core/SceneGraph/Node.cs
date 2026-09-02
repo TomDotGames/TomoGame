@@ -1,5 +1,7 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections;
+using System.Xml.Linq;
 using Microsoft.Xna.Framework;
+using TomoGame.Core.Coroutines;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TomoGame.Core.SceneGraph;
@@ -158,5 +160,35 @@ public partial class Node
 
         _children.Remove(node);
         node.Parent = null;
+    }
+
+    // Coroutines
+    private readonly List<Coroutine> _coroutines = new();
+
+    /// <summary>Runs a coroutine, keeping hold of it so the node can cut it short later.</summary>
+    public void RunCoroutine(Coroutine coroutine)
+    {
+        // the original never dropped finished tasks, so the list grew for the life of the node
+        _coroutines.RemoveAll(running => running.IsFinished);
+
+        if (CoroutineManager.Run(coroutine) != null)
+        {
+            _coroutines.Add(coroutine);
+        }
+    }
+
+    public void RunCoroutine(IEnumerator enumerator)
+    {
+        RunCoroutine(new WrappedEnumerator(enumerator));
+    }
+
+    /// <summary>Jumps this node's coroutines to their end state, so it settles without waiting.</summary>
+    public void FinishAllCoroutinesImmediately()
+    {
+        foreach (Coroutine coroutine in _coroutines.ToList())
+        {
+            coroutine.FinishImmediately();
+        }
+        _coroutines.Clear();
     }
 }
