@@ -119,7 +119,9 @@ public partial class Node
         return false;
     }
 
-    private void RemoveChild(Node node)
+    /// <summary>Detaches a child, leaving it parentless. <see cref="AddChild"/> already does this when
+    /// reparenting; call it directly only to take a node out of the tree entirely.</summary>
+    public void RemoveChild(Node node)
     {
         if (!Dbg.Verify(_children.Contains(node)))
             return;
