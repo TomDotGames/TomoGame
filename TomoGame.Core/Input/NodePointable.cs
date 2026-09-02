@@ -6,12 +6,15 @@ namespace TomoGame.Core.Input;
 public class NodePointable : Pointable
 {
     private Node _node;
-    
+
+    /// <summary>Whatever draws on top takes the pointer, so overlapping nodes behave the way they look.</summary>
+    public override float Priority => _node.WorldZOrder;
+
     public NodePointable(Node node)
     {
         _node = node;
     }
-    
+
     public override bool IsPointInside(Vector2 point)
     {
         return IsInActiveScene() && _node.WorldRect.Contains(point);
@@ -22,12 +25,6 @@ public class NodePointable : Pointable
     /// first, leaving the visible node under the cursor unable to react.</summary>
     private bool IsInActiveScene()
     {
-        Node root = _node;
-        while (root.Parent != null)
-        {
-            root = root.Parent;
-        }
-
-        return ReferenceEquals(root, GameBase.Instance?.SceneRoot);
+        return ReferenceEquals(_node.Root, GameBase.Instance?.SceneRoot);
     }
 }

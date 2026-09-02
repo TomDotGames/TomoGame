@@ -15,12 +15,42 @@ public partial class Node
     /// <summary>The children of this node.</summary>
     public IReadOnlyCollection<Node> Children => _children;
 
+    /// <summary>The node at the top of this node's tree, which for a node in a live scene is its
+    /// <see cref="SceneRootNode"/>.</summary>
+    public Node Root
+    {
+        get
+        {
+            Node root = this;
+            while (root.Parent != null)
+            {
+                root = root.Parent;
+            }
+            return root;
+        }
+    }
+
     private bool _initialized;
 
     /// <summary>Where this node draws relative to the rest of the graph. Higher draws later, so on top. It
     /// accumulates down the tree, so raising a node's order lifts its whole subtree, and nodes sharing an
     /// order keep the graph's own order: parents before children, siblings as they were added.</summary>
     public float ZOrder { get; set; }
+
+    /// <summary>This node's draw order with its ancestors' accumulated, which is the order it actually draws
+    /// in. <see cref="CollectDrawList"/> arrives at the same number by walking down.</summary>
+    public float WorldZOrder
+    {
+        get
+        {
+            float zOrder = 0f;
+            for (Node? node = this; node != null; node = node.Parent)
+            {
+                zOrder += node.ZOrder;
+            }
+            return zOrder;
+        }
+    }
 
     public Node(Node? parent = null)
     {
