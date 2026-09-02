@@ -30,12 +30,15 @@ public static class Dbg
     ///     return;
     /// </summary>
     [DebuggerHidden, StackTraceHidden]
-    public static bool Verify(bool condition, string? message = null)
+    public static bool Verify(bool condition, string? message = null,
+        [CallerFilePath] string file = "",
+        [CallerLineNumber] int line = 0)
     {
         #if DEBUG
         if (!condition)
         {
-            if (message != null) Log.Error(message);
+            // a failure without a message used to log nothing at all, so it was invisible
+            Log.Error(message ?? "Verify failed", file, line);
             if (Debugger.IsAttached) Debugger.Break();
         }
         #endif
@@ -48,8 +51,11 @@ public static class Dbg
     /// <code>if (!Verify(maybeNull)) return;  // maybeNull is non-null below</code>
     /// </summary>
     [DebuggerHidden, StackTraceHidden]
-    public static bool Verify<T>([NotNullWhen(true)] T? value, string? message = null) where T : class
+    public static bool Verify<T>([NotNullWhen(true)] T? value, string? message = null,
+        [CallerFilePath] string file = "",
+        [CallerLineNumber] int line = 0) where T : class
     {
-        return Verify(value != null, message);
+        // passed through, so the error points at the caller rather than at this line
+        return Verify(value != null, message, file, line);
     }
 }
