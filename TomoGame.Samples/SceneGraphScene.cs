@@ -40,7 +40,7 @@ public class SceneGraphScene : SceneRootNode
         _planet.LocalRotation = (Time.TotalSeconds * PlanetSpinSpeed) % MathHelper.TwoPi;
 
         // scaling the planet scales the car and the dog with it, and widens the dog's orbit, from one call
-        _planet.LocalScale = 1f + (PulseAmount * MathF.Sin(Time.TotalSeconds * PulseSpeed));
+        _planet.LocalScaleUniform = 1f + (PulseAmount * MathF.Sin(Time.TotalSeconds * PulseSpeed));
 
         // draw the graph itself. Node bounds would be misleading here: Rect is axis aligned, so a rotated
         // node's bounds do not line up with what is drawn.

@@ -22,9 +22,9 @@ public partial class Node
 
     private Vector2 _size;
 
-    /// <summary>This node's scale relative to its parent. Composes down the tree, so scaling a node scales
-    /// everything under it.</summary>
-    public float LocalScale
+    /// <summary>This node's per-axis scale relative to its parent. Composes down the tree, so scaling a node
+    /// scales everything under it.</summary>
+    public Vector2 LocalScale
     {
         get => _localTransform.Scale;
         set
@@ -34,7 +34,13 @@ public partial class Node
         }
     }
 
-    public float WorldScale => WorldTransform.Scale;
+    /// <summary>Sets both axes at once.</summary>
+    public float LocalScaleUniform
+    {
+        set => LocalScale = new Vector2(value, value);
+    }
+
+    public Vector2 WorldScale => WorldTransform.Scale;
 
     /// <summary>This node's rotation in radians, relative to its parent. Composes down the tree, so rotating a
     /// node sweeps everything under it around this node's origin.</summary>

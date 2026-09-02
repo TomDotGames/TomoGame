@@ -24,7 +24,12 @@ public partial class Node
         XAttribute? scale = element.Attribute("scale");
         if (scale != null)
         {
-            LocalScale = ParseFloat(scale.Value);
+            string[] tokens = scale.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (Dbg.Verify(tokens.Length is 1 or 2, "scale expects 1 or 2 values, eg: scale=\"2\" or scale=\"2 1\""))
+            {
+                float x = ParseFloat(tokens[0]);
+                LocalScale = new Vector2(x, tokens.Length == 2 ? ParseFloat(tokens[1]) : x);
+            }
         }
 
         XAttribute? rotation = element.Attribute("rotation");

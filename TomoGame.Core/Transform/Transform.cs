@@ -6,8 +6,12 @@ public struct Transform
 {
     public Vector2 Position { get; set; } = Vector2.Zero;
     public float Rotation { get; set; } = 0f;
-    public float Scale { get; set; } = 1f;
-    
+    /// <summary>Scale per axis. Composing a non-uniform scale with a rotation is a shear, which a
+    /// position/rotation/scale triple cannot hold, so the axes compose independently of rotation: exact while
+    /// a scaled node is unrotated, an approximation once it turns.</summary>
+    public Vector2 Scale { get; set; } = Vector2.One;
+
+
     public static Transform Identity { get; } = new Transform();
 
     public Transform()
@@ -40,7 +44,7 @@ public struct Transform
     public Transform Inverted()
     {
         Transform outTransform = new Transform();
-        outTransform.Scale = 1 / Scale; 
+        outTransform.Scale = Vector2.One / Scale;
         outTransform.Rotation = -Rotation;
         outTransform.Position = -outTransform.TransformPoint(Position);
         return outTransform;
