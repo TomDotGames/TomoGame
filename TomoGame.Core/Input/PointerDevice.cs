@@ -1,7 +1,8 @@
 namespace TomoGame.Core.Input;
 
-/// <summary>Base class for a device that produces and updates one or more pointers.</summary>
-internal abstract class PointerDevice
+/// <summary>Base class for a device that produces and updates one or more pointers. Public so a game can
+/// supply its own — a scripted pointer, a touch device — through <see cref="InputManager.SetPointerDevice"/>.</summary>
+public abstract class PointerDevice
 {
     private Dictionary<int, PointerInstance> _pointers = new();
 

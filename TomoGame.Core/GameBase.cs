@@ -95,6 +95,14 @@ public class GameBase : Game
         return new Vector2(viewportPosition.X / _currentRootNode.DrawScale, viewportPosition.Y / _currentRootNode.DrawScale);
     }
 
+    public Vector2 ScenePositionToViewport(Vector2 scenePosition)
+    {
+        if (!Dbg.Verify(_currentRootNode != null, "no scene is set"))
+            return Vector2.Zero;
+
+        return scenePosition * _currentRootNode.DrawScale;
+    }
+
     protected void AddScene(string name, SceneRootNode sceneRootNode)
     {
         Dbg.Assert(!_scenes.ContainsKey(name));

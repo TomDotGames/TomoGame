@@ -21,6 +21,12 @@ public class InputManager : GameComponent
         _pointerDevice = new MouseDevice();
     }
 
+    /// <summary>Swaps in a different pointer device, replacing the system mouse.</summary>
+    public void SetPointerDevice(PointerDevice device)
+    {
+        _pointerDevice = device;
+    }
+
     /// <summary>Registers a pointable to receive pointer interactions.</summary>
     public void RegisterPointable(Pointable pointable)
     {
