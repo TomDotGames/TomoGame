@@ -122,7 +122,9 @@ public partial class Node
     protected virtual void OnDraw(SpriteBatch spriteBatch) { }
 
     /// <summary>Adds a node as a child, reparenting it if necessary. Initializes the child if this node is already initialized.</summary>
-    public void AddChild(Node node)
+    /// <param name="keepWorldPosition">Holds the node still on screen across the reparent, rather than
+    /// carrying its local position into the new parent's frame.</param>
+    public void AddChild(Node node, bool keepWorldPosition = false)
     {
         if (!Dbg.Verify(node != this))
             return;
@@ -133,9 +135,15 @@ public partial class Node
         if (!Dbg.Verify(!_children.Contains(node)))
             return;
 
+        Vector2 worldPosition = node.WorldPosition;
+
         node.Parent?.RemoveChild(node);
         _children.Add(node);
         node.Parent = this;
+
+        if (keepWorldPosition)
+            node.WorldPosition = worldPosition;
+
         if (_initialized && !node._initialized)
             node.Initialize();
     }
