@@ -17,6 +17,21 @@ public class SpriteNode : Node
     /// <summary>When true, the sprite is rendered flipped horizontally.</summary>
     public bool FlipX { get; set; }
 
+    /// <summary>The sprite being drawn. Setting it resizes the node to suit, as loading one by name does.</summary>
+    public Sprite? Sprite
+    {
+        get => _sprite;
+        set
+        {
+            _sprite = value;
+            if (_sprite == null)
+                return;
+
+            _sourceRect = _sprite.SourceRect;
+            IntrinsicSize = new Vector2(_sprite.SourceRect.Width, _sprite.SourceRect.Height);
+        }
+    }
+
     public SpriteNode(Node? parent = null) : base(parent)
     {
     }
@@ -49,9 +64,7 @@ public class SpriteNode : Node
 
     private void LoadSprite(string spriteName)
     {
-        _sprite = ResourceManager.Instance!.GetSprite(spriteName);
-        _sourceRect = _sprite.SourceRect;
-        IntrinsicSize = new Vector2(_sprite.SourceRect.Width, _sprite.SourceRect.Height);
+        Sprite = ResourceManager.Instance!.GetSprite(spriteName);
     }
 
     /// <summary>Parses a layout's animmode, defaulting to looping.</summary>
