@@ -11,6 +11,8 @@ public class SpriteRegistry
     {
         public int[]? Rect { get; set; }
 
+        public int[]? Offset { get; set; }
+
         public class AnimationData
         {
             public int Frames { get; set; }
@@ -58,13 +60,17 @@ public class SpriteRegistry
             foreach (KeyValuePair<string, SpriteData.AnimationData> animData in spriteData.Animations)
             {
                 // the constructor rather than field assignment, so the frame time initialiser runs
-                Sprite.Animation animation = new Sprite.Animation(sourceRect, animData.Value.Frames); // todo: offsets
+                Sprite.Animation animation = new Sprite.Animation(sourceRect, animData.Value.Frames);
                 Dbg.Assert(!animations.ContainsKey(animData.Key));
                 animations.Add(animData.Key, animation);
             }
         }
 
-        Sprite sprite = new Sprite(sheetTexture, sourceRect, animations);
+        Vector2 offset = spriteData.Offset == null
+            ? Vector2.Zero
+            : new Vector2(spriteData.Offset[0], spriteData.Offset[1]);
+
+        Sprite sprite = new Sprite(sheetTexture, sourceRect, animations) { Offset = offset };
         string name = $"{sheetName}.{spriteName}";
         _sprites.Add(name.ToLower(), sprite);
     }

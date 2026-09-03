@@ -36,7 +36,16 @@ public class SpriteNode : Node
     {
     }
     
-    /// <summary>Creates a sprite node using the named sprite from the <see cref="ResourceManager"/>.</summary>
+    /// <summary>Creates a sprite node using the named sprite from the <see cref="ResourceManager"/>, placed at
+    /// the sprite's declared <see cref="Sprites.Sprite.Offset"/>.</summary>
+    public SpriteNode(string spriteName, Node? parent = null) : base(parent)
+    {
+        LoadSprite(spriteName);
+        LocalPosition = _sprite?.Offset ?? Vector2.Zero;
+    }
+
+    /// <summary>Creates a sprite node using the named sprite from the <see cref="ResourceManager"/>, at an
+    /// explicit position rather than the sprite's own offset.</summary>
     public SpriteNode(string spriteName, Vector2 localPosition, Node? parent = null) : base(parent)
     {
         LoadSprite(spriteName);

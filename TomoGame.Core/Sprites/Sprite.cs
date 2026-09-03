@@ -16,6 +16,12 @@ public class Sprite
     /// <summary>The source rectangle within the texture for this sprite's base frame.</summary>
     public Rectangle SourceRect => _sourceRect;
 
+    /// <summary>Where the sprite sits relative to whatever it is a part of, declared by the descriptor's
+    /// <c>offset</c>. It lets a sheet be packed tightly while a sprite still knows where it belongs — a
+    /// cliff edge against its tile, say. Nothing is applied automatically; place a node with
+    /// <see cref="SpriteNode(string, SceneGraph.Node?)"/> or read it directly.</summary>
+    public Vector2 Offset { get; init; }
+
     /// <summary>Defines a frame-based animation within a sprite sheet.</summary>
     public struct Animation
     {
