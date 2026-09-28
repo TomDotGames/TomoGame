@@ -135,11 +135,15 @@ public partial class Node
         if (!Dbg.Verify(!_children.Contains(node)))
             return;
 
-        Vector2 worldPosition = node.WorldPosition;
+        // read before reparenting, since WorldPosition is measured through the old parent; only when actually
+        // needed, since reading it this early caches a transform through the old (possibly null) parent that
+        // must then be invalidated below rather than trusted
+        Vector2 worldPosition = keepWorldPosition ? node.WorldPosition : Vector2.Zero;
 
         node.Parent?.RemoveChild(node);
         _children.Add(node);
         node.Parent = this;
+        node.MarkWorldTransformDirty();
 
         if (keepWorldPosition)
             node.WorldPosition = worldPosition;
