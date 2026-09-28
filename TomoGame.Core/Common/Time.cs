@@ -17,4 +17,11 @@ public static class Time
 
     /// <summary>Seconds elapsed during the last game tick.</summary>
     public static float TickSeconds => (float)_gameTime.ElapsedGameTime.TotalSeconds;
+
+    /// <summary>Total milliseconds elapsed since the game started. A double, unlike
+    /// <see cref="TotalSeconds"/>, so it keeps full precision however long the game runs.</summary>
+    public static double TotalMilliseconds => _gameTime.TotalGameTime.TotalMilliseconds;
+
+    /// <summary>Milliseconds elapsed during the last game tick.</summary>
+    public static double TickMilliseconds => _gameTime.ElapsedGameTime.TotalMilliseconds;
 }
