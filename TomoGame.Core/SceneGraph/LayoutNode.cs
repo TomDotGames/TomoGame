@@ -48,6 +48,9 @@ public class LayoutNode : Node
         {
             LoadElement(child, parentNode);
         }
+
+        // after the children, so a node sizing to fit them sees them all, already fitted themselves
+        newNode?.FinishLayout();
     }
 
     public Node? FindNode(string name)

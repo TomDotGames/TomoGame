@@ -125,6 +125,35 @@ public partial class Node
          MarkWorldTransformDirty();
     }
 
+    /// <summary>Sizes this node to exactly wrap its children, keeping its <see cref="OriginUV"/>: the children
+    /// are moved as a group so their bounds sit where this node's rect now is. A node that draws nothing of its
+    /// own then anchors like a sprite, because its rect and its visible content agree. Children's rotation is
+    /// not accounted for.</summary>
+    public void SizeToFitChildren()
+    {
+        if (_children.Count == 0)
+            return;
+
+        Vector2 min = new(float.MaxValue);
+        Vector2 max = new(float.MinValue);
+        foreach (Node child in _children)
+        {
+            Rect childRect = child.LocalRect;
+            min = Vector2.Min(min, childRect.Min);
+            max = Vector2.Max(max, childRect.Max);
+        }
+
+        IntrinsicSize = max - min;
+
+        // children are placed in our unscaled frame, measured from our origin, where our rect's top left is at
+        // -OriginUV * IntrinsicSize
+        Vector2 shift = -OriginUV * IntrinsicSize - min;
+        foreach (Node child in _children)
+        {
+            child.TranslateInLocalSpace(shift);
+        }
+    }
+
     public Vector2 UVToLocalSpace(Vector2 uv)
     {
         return new Vector2(uv.X * LocalSize.X,  uv.Y * LocalSize.Y);

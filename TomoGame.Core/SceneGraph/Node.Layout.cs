@@ -8,14 +8,22 @@ public partial class Node
 {
     public string Name { get; private set; }
 
+    private bool _sizeToFitChildren;
+
     public virtual void ApplyLayoutAttributes(XElement element)
     {
         // size and scale come first: pos anchors against LocalSize, which both of them change
         XAttribute? size = element.Attribute("size");
-        if (size != null)
+        if (size?.Value.Trim() == "fit")
+        {
+            // deferred to FinishLayout, since a layout element's children don't exist yet. Until then this node
+            // has no size, so children that anchor their pos against it all anchor to its origin.
+            _sizeToFitChildren = true;
+        }
+        else if (size != null)
         {
             string[] tokens = size.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (Dbg.Verify(tokens.Length == 2, "size expects 2 values, eg: size=\"32 8\""))
+            if (Dbg.Verify(tokens.Length == 2, "size expects 2 values or \"fit\", eg: size=\"32 8\""))
             {
                 IntrinsicSize = new Vector2(ParseFloat(tokens[0]), ParseFloat(tokens[1]));
             }
@@ -68,6 +76,13 @@ public partial class Node
         {
             Name = name.Value;
         }
+    }
+
+    /// <summary>Called by <see cref="LayoutNode"/> once this node's element, children included, is loaded.</summary>
+    internal void FinishLayout()
+    {
+        if (_sizeToFitChildren)
+            SizeToFitChildren();
     }
 
     /// <summary>Parses a number from a layout file. Layouts are authored with '.' as the decimal separator
