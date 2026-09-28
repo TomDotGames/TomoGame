@@ -25,7 +25,9 @@ public static class LayoutNodeRegistry
         // make sure all referenced assemblies are loaded
         string coreName = typeof(Node).Assembly.GetName().Name!; // "TomoGame.Core"
 
-        foreach (string dll in Directory.GetFiles(AppContext.BaseDirectory, "TomoGame*.dll"))
+        // scans every assembly next to the game, not just ones named "TomoGame*", so a game's own
+        // [LayoutNode] types (defined in its own assembly, not a TomoGame library) are picked up too
+        foreach (string dll in Directory.GetFiles(AppContext.BaseDirectory, "*.dll"))
         {
             Assembly assembly;
             try
