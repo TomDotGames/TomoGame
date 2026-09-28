@@ -17,6 +17,8 @@ public class SpriteNode : Node
     /// <summary>When true, the sprite is rendered flipped horizontally.</summary>
     public bool FlipX { get; set; }
 
+    public float Alpha { get; set; } = 1f; 
+
     /// <summary>The sprite being drawn. Setting it resizes the node to suit, as loading one by name does.</summary>
     public Sprite? Sprite
     {
@@ -71,7 +73,7 @@ public class SpriteNode : Node
         }
     }
 
-    private void LoadSprite(string spriteName)
+    public void LoadSprite(string spriteName)
     {
         Sprite = ResourceManager.Instance!.GetSprite(spriteName);
     }
@@ -104,7 +106,9 @@ public class SpriteNode : Node
         Vector2 renderScale = WorldSize / sourceSize;
         Vector2 origin = OriginUV * sourceSize;
 
-        spriteBatch.Draw(_sprite.Texture, WorldPosition, _sourceRect, Color.White, WorldRotation, origin,
+        Color drawColor = Color.White * Alpha;
+
+        spriteBatch.Draw(_sprite.Texture, WorldPosition, _sourceRect, drawColor, WorldRotation, origin,
             renderScale, effects, 0f);
     }
 
