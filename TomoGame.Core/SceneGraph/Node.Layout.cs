@@ -38,6 +38,12 @@ public partial class Node
             LocalRotation = MathHelper.ToRadians(ParseFloat(rotation.Value));
         }
 
+        XAttribute? zorder = element.Attribute("zorder");
+        if (zorder != null)
+        {
+            ZOrder = ParseFloat(zorder.Value);
+        }
+
         XAttribute? pos = element.Attribute("pos");
         if (pos != null)
         {
