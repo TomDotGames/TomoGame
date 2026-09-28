@@ -6,8 +6,6 @@ namespace TomoGame.Core.SceneGraph;
 [LayoutNode("Transform")]
 public partial class Node
 {
-    public string Name { get; private set; }
-
     private bool _sizeToFitChildren;
 
     public virtual void ApplyLayoutAttributes(XElement element)

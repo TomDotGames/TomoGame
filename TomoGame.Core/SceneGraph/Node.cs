@@ -32,6 +32,32 @@ public partial class Node
         }
     }
 
+    /// <summary>An optional name to look this node up by with <see cref="FindNode"/>. Layouts set it from an
+    /// element's name attribute.</summary>
+    public string? Name { get; set; }
+
+    /// <summary>Finds the first node below this one with the given name, depth first. Names are only kept
+    /// unique within a layout, so search from a node that scopes the one you mean; <see cref="Root"/> searches
+    /// the whole scene. This walks the subtree, so look a node up once and keep it.</summary>
+    public Node? FindNode(string name) => FindNode<Node>(name);
+
+    /// <summary>As <see cref="FindNode"/>, but only matching a <typeparamref name="T"/>: a node with the name
+    /// but another type is passed over.</summary>
+    public T? FindNode<T>(string name) where T : Node
+    {
+        foreach (Node child in _children)
+        {
+            if (child is T match && child.Name == name)
+                return match;
+
+            T? found = child.FindNode<T>(name);
+            if (found != null)
+                return found;
+        }
+
+        return null;
+    }
+
     private bool _initialized;
 
     /// <summary>Where this node draws relative to the rest of the graph. Higher draws later, so on top. It

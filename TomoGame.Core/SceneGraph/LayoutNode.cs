@@ -4,10 +4,10 @@ using TomoGame.Core.Sprites;
 
 namespace TomoGame.Core.SceneGraph;
 
+/// <summary>Builds its subtree from a layout file. Look up the named nodes in it with
+/// <see cref="Node.FindNode"/>.</summary>
 public class LayoutNode : Node
 {
-    private Dictionary<string, Node> _namedNodes = new Dictionary<string, Node>();
-    
     public LayoutNode(string layoutFilePath, Node parent) : base(parent)
     {
         LocalSize = parent.LocalSize;
@@ -21,40 +21,37 @@ public class LayoutNode : Node
         if (!Dbg.Verify(root))
             return;
 
+        // only to catch a name used twice in one layout, which FindNode would silently resolve to the first
+        HashSet<string> names = [];
+
         Node parentNode = this;
         if (Dbg.Verify(root.Name.LocalName == "Layout"))
         {
             foreach (XElement child in root.Elements())
             {
-                LoadElement(child, parentNode);
+                LoadElement(child, parentNode, names);
             }
         }
     }
 
-    private void LoadElement(XElement element, Node parentNode)
+    private void LoadElement(XElement element, Node parentNode, HashSet<string> names)
     {
         Node? newNode = LayoutNodeRegistry.CreateNode(element, parentNode);
         if (Dbg.Verify(newNode != null))
         {
-            if (newNode.Name != null && newNode.Name.Length > 0)
+            if (!string.IsNullOrEmpty(newNode.Name))
             {
-                Dbg.Assert(!_namedNodes.ContainsKey(newNode.Name));
-                _namedNodes[newNode.Name] = newNode;
+                Dbg.Verify(names.Add(newNode.Name), $"layout has more than one node named '{newNode.Name}'");
             }
             parentNode = newNode!;
         }
 
         foreach (XElement child in element.Elements())
         {
-            LoadElement(child, parentNode);
+            LoadElement(child, parentNode, names);
         }
 
         // after the children, so a node sizing to fit them sees them all, already fitted themselves
         newNode?.FinishLayout();
-    }
-
-    public Node? FindNode(string name)
-    {
-        return _namedNodes.GetValueOrDefault(name);
     }
 }
