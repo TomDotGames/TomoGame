@@ -80,6 +80,9 @@ public partial class Node
         }
     }
 
+    /// <summary>Attaches the node to <paramref name="parent"/> but never initializes it: a subclass's
+    /// constructor body hasn't run yet at this point, so <see cref="OnInitialize"/> would see its fields unset.
+    /// A node joining a live scene is initialized on its first update instead.</summary>
     public Node(Node? parent = null)
     {
         parent?.AddChild(this);
@@ -88,7 +91,7 @@ public partial class Node
     internal void Initialize()
     {
         // a scene can be shown more than once, and re-running OnInitialize would allocate a second set of
-        // everything the first run made. AddChild already relies on this flag covering the whole subtree.
+        // everything the first run made. Update relies on this flag covering the whole subtree.
         if (_initialized)
             return;
 
@@ -104,6 +107,10 @@ public partial class Node
 
     internal void Update(GameTime gameTime)
     {
+        // a node added to an already-initialized tree waits until here, so its constructor has long finished
+        if (!_initialized)
+            Initialize();
+
         OnUpdate(gameTime);
 
         // by index, not foreach: OnUpdate can add to the tree - DebugDraw parents its overlay onto the scene
@@ -119,6 +126,11 @@ public partial class Node
     /// nodes that come later in the tree.</summary>
     internal void CollectDrawList(List<DrawEntry> drawList, float inheritedZOrder)
     {
+        // nodes added since the last update - e.g. by a coroutine, which runs after the scene updates - aren't
+        // initialized yet, and have nothing set up to draw until they are
+        if (!_initialized)
+            return;
+
         float zOrder = inheritedZOrder + ZOrder;
 
         // the index is the tie-break that keeps equal orders in graph order, and makes the sort total so it
@@ -147,7 +159,8 @@ public partial class Node
     /// <summary>Called every frame during the draw pass. Override to implement drawing.</summary>
     protected virtual void OnDraw(SpriteBatch spriteBatch) { }
 
-    /// <summary>Adds a node as a child, reparenting it if necessary. Initializes the child if this node is already initialized.</summary>
+    /// <summary>Adds a node as a child, reparenting it if necessary. If this node is already initialized, the
+    /// child is initialized on its next update rather than here, and isn't drawn until then.</summary>
     /// <param name="keepWorldPosition">Holds the node still on screen across the reparent, rather than
     /// carrying its local position into the new parent's frame.</param>
     public void AddChild(Node node, bool keepWorldPosition = false)
@@ -173,9 +186,6 @@ public partial class Node
 
         if (keepWorldPosition)
             node.WorldPosition = worldPosition;
-
-        if (_initialized && !node._initialized)
-            node.Initialize();
     }
 
     private bool IsDescendantOf(Node node)
