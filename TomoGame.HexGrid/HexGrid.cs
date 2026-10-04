@@ -31,6 +31,20 @@ public class HexNode
 /// <summary>An edge of a <see cref="HexGrid{T}"/>, shared by up to two cells and bounded by two nodes.</summary>
 public class HexEdge
 {
+    /// <summary>The three angles an edge of a pointy-topped hex can run at, as drawn on screen.</summary>
+    public enum EOrientation
+    {
+        /// <summary>"|" — between W and E neighbours.</summary>
+        Vertical,
+        /// <summary>"/" — between NW and SE neighbours.</summary>
+        Rising,
+        /// <summary>"\" — between NE and SW neighbours.</summary>
+        Falling
+    }
+
+    /// <summary>The angle this edge runs at.</summary>
+    public EOrientation Orientation;
+
     /// <summary>The cells this edge borders; null on the side that falls off the edge of the grid.</summary>
     public HexCell?[] Hexes = new HexCell?[2];
 
@@ -198,6 +212,8 @@ public class HexGrid<T> where T : HexCell, new()
 
                 edges.Add(key, new HexEdge
                 {
+                    // neighbors[i] lies in EDirection i, and opposite directions are 3 apart, so i % 3 pairs them up
+                    Orientation = (HexEdge.EOrientation)(i % 3),
                     Hexes = [_cells.GetValueOrDefault(a), _cells.GetValueOrDefault(b)],
                     Coords = [a, b],
                     Nodes = [nodesByKey[MakeNodeKey(a, prev, b)], nodesByKey[MakeNodeKey(a, b, next)]]
